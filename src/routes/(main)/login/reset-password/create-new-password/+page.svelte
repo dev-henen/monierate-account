@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
+    import { writable } from "svelte/store";
 
     let showPassword = writable(false);
 
     function togglePasswordVisibility() {
-        showPassword.update(value => !value);
+        showPassword.update((value) => !value);
     }
 </script>
 
 <svelte:head>
-    <title>Login - Monierate</title>
+    <title>Create a new password - Monierate</title>
 </svelte:head>
 
 <div class="flex items-center justify-center min-h-screen">
@@ -25,7 +25,10 @@
             >
                 Go back
             </a>
-            <a href="/login" class="button text-center w-1/2 font-semibold">
+            <a
+                href="/login"
+                class="button bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-dark dark:text-light text-center w-1/2 font-semibold"
+            >
                 Cancel
             </a>
         </div>
@@ -43,32 +46,14 @@
                 width="35"
                 class="hidden dark:inline"
             />
-            <h2 class="text-xl font-semibold mb-4 inline">Login</h2>
+            <h2 class="text-xl font-semibold mb-4 inline">
+                Create a new password
+            </h2>
         </div>
-
-        <p class="text-sm text-gray-600 mb-4">
-            By continuing, you agree to monierate <a
-                href="https://monierate.com/policy/data">Terms of Service</a
-            >
-            and acknowledge you've read our
-            <a href="https://monierate.com/policy/data"
-                >Privacy Policy</a
-            >.
-        </p>
 
         <form class="space-y-4" on:submit={() => false}>
             <div>
-                <label class="label" for="login-email">Email</label>
-                <input
-                    type="email"
-                    class="input"
-                    id="login-email"
-                    placeholder="Enter your email"
-                />
-            </div>
-
-            <div>
-                <label class="label" for="login-password">Password</label>
+                <label class="label" for="new-password">New password</label>
                 <div class="relative">
                     <input
                         type={$showPassword ? "text" : "password"}
@@ -121,38 +106,19 @@
                         {/if}
                     </button>
                 </div>
-                <p class="text-sm text-gray-500">
-                    <a href="/login/reset-password">Forgot password?</a>
-                </p>
+
+                <label class="label" for="new-password2"
+                    >Confirm new password</label
+                >
+                <input
+                    type="password"
+                    class="input"
+                    id="new-password2"
+                    placeholder="Confirm new password"
+                />
             </div>
 
-            <button type="submit" class="button w-full"> Login </button>
+            <button type="submit" class="button w-full mt-5"> Continue </button>
         </form>
-
-        <div
-            class="flex items-center justify-center mt-4 border-b border-gray-300 mb-8"
-        >
-            <span
-                class="text-sm text-gray-500 bg-white dark:bg-gray-900 px-2 relative bottom-[-9px]"
-                >or continue with</span
-            >
-        </div>
-
-        <div class="flex justify-center gap-4 mt-4">
-            <button
-                class="w-1/2 px-4 py-2 border dark:border-gray-700 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-                <img
-                    src="/icons/google-logo.png"
-                    alt="Google"
-                    class="w-5 h-5"
-                /> Google
-            </button>
-            <button
-                class="w-1/2 px-4 py-2 border dark:border-gray-700 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-                <img src="/icons/apple-logo.png" alt="Apple" class="w-5 h-5" /> Apple
-            </button>
-        </div>
     </div>
 </div>
