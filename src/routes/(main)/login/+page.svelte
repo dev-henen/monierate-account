@@ -13,28 +13,28 @@
 </svelte:head>
 
 <div class="flex items-center justify-center md:min-h-screen">
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-[100%] md:max-w-[500px]">
 
         <div
-            class="rounded-lg p-6 pt-0 relative md:border md:dark:border-gray-700"
+            class="rounded-lg p-12 relative md:border md:dark:border-gray-700"
         >
-            <div class="py-2">
+            <div class="mb-8">
                 <img
                     src="/monierate-logo.png"
                     alt="Monierate"
                     width="150"
-                    class="inline dark:hidden relative ml-[-9px]"
+                    class="inline dark:hidden mb-8"
                 />
                 <img
                     src="/monierate-logo-white.png"
                     alt="Monierate"
                     width="150"
-                    class="hidden dark:inline relative ml-[-9px]"
+                    class="hidden dark:inline mb-8"
                 />
-                <h2 class="text-xl font-semibold my-5">Login</h2>
+                <h2 class="text-2xl font-semibold">Login</h2>
             </div>
     
-            <form class="space-y-4" on:submit={() => false}>
+            <div>
                 <div>
                     <label class="label" for="login-email">Email</label>
                     <input
@@ -101,18 +101,18 @@
                     </div>
                 </div>
 
-                <div class="block text-sm text-gray-600 pb-8">
+                <div class="block text-sm text-gray-600 mb-6">
                     <a
                         href="/login/reset-password"
                         class="text-blue-500">Forgot your password?</a
                     >
                 </div>
     
-                <button type="submit" class="button w-full"> Login </button>
-            </form>
+                <button class="button w-full"> Login </button>
+            </div>
         </div>
     
-        <div class="w-full p-6 md:text-center">
+        <div class="w-full px-12 md:p-12 md:text-center">
             or <a href="/signup">Get an account</a>
         </div>
     </div>

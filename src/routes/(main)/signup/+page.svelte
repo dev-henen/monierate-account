@@ -13,29 +13,29 @@
 </svelte:head>
 
 <div class="flex items-center justify-center md:min-h-screen">
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-[100%] md:max-w-[500px]">
 
         <div
-            class="rounded-lg p-6 pt-0 relative md:border md:dark:border-gray-700"
+            class="rounded-lg p-12 relative md:border md:dark:border-gray-700"
         >
-            <div class="py-2">
+            <div class="mb-8">
                 <img
                     src="/monierate-logo.png"
                     alt="Monierate"
                     width="150"
-                    class="inline dark:hidden relative ml-[-9px]"
+                    class="inline dark:hidden mb-8"
                 />
                 <img
                     src="/monierate-logo-white.png"
                     alt="Monierate"
                     width="150"
-                    class="hidden dark:inline relative ml-[-9px]"
+                    class="hidden dark:inline mb-8"
                 />
-                <h2 class="text-xl font-semibold my-5">Welcome to Monierate</h2>
+                <h2 class="text-2xl font-semibold">Welcome to Monierate</h2>
             </div>
     
-            <form class="space-y-4" on:submit={() => false}>
-                <div>
+            <div>
+                <div class="mb-6">
                     <label class="label" for="login-email">Email</label>
                     <input
                         type="email"
@@ -45,7 +45,7 @@
                     />
                 </div>
     
-                <div>
+                <div class="mb-6">
                     <label class="label" for="login-password">Password</label>
                     <div class="relative">
                         <input
@@ -60,7 +60,6 @@
                             on:click={togglePasswordVisibility}
                         >
                             {#if $showPassword}
-                                <!-- Eye Open Icon -->
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -81,7 +80,6 @@
                                     />
                                 </svg>
                             {:else}
-                                <!-- Eye Slash Icon -->
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -101,7 +99,7 @@
                     </div>
                 </div>
     
-                <div class="text-sm text-gray-600 pb-8 flex justify-center">
+                <div class="text-sm text-gray-600 mb-6 flex justify-center">
                     <span class="pr-2">
                         <input
                             type="checkbox"
@@ -122,11 +120,11 @@
                     </span>
                 </div>
     
-                <button type="submit" class="button w-full"> Continue </button>
-            </form>
+                <button class="button w-full"> Continue </button>
+            </div>
         </div>
     
-        <div class="w-full p-6 md:text-center">
+        <div class="w-full px-12 md:p-12 md:text-center">
             or <a href="/login">Log in</a>
         </div>
     </div>
