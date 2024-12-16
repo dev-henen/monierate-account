@@ -1,60 +1,49 @@
-<script>
+<script lang="ts">
 </script>
 
 <svelte:head>
     <title>Reset password - Monierate</title>
 </svelte:head>
 
-<div class="flex items-center justify-center min-h-screen">
-    <div
-        class="bg-white dark:bg-gray-900 w-full max-w-md rounded-lg shadow-lg p-6 relative"
-    >
+<div class="flex items-center justify-center md:min-h-screen">
+    <div class="w-full max-w-md">
+
         <div
-            class="flex justify-between mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg p-2"
+            class="rounded-lg p-6 pt-0 relative md:border md:dark:border-gray-700"
         >
-            <a
-                href="/signup"
-                class="button bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-dark dark:text-light text-center w-1/2 font-semibold"
-            >
-                Sign Up
-            </a>
-            <a
-                href="/login"
-                class="button bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-dark dark:text-light text-center w-1/2 font-semibold"
-            >
-                Login
-            </a>
-        </div>
-
-        <div class="py-2">
-            <img
-                src="/favicon.png"
-                alt="Monierate"
-                width="35"
-                class="inline dark:hidden"
-            />
-            <img
-                src="/favicon-white.png"
-                alt="Monierate"
-                width="35"
-                class="hidden dark:inline"
-            />
-            <h2 class="text-xl font-semibold mb-4 inline">Reset password</h2>
-        </div>
-
-        <form class="space-y-4" on:submit={() => false}>
-            <div>
-                <label class="label" for="user-email">Email</label>
-                <input
-                    type="email"
-                    class="input"
-                    id="user-email"
-                    placeholder="Enter your account email address"
+            <div class="py-2">
+                <img
+                    src="/monierate-logo.png"
+                    alt="Monierate"
+                    width="150"
+                    class="inline dark:hidden relative ml-[-9px]"
                 />
+                <img
+                    src="/monierate-logo-white.png"
+                    alt="Monierate"
+                    width="150"
+                    class="hidden dark:inline relative ml-[-9px]"
+                />
+                <h2 class="text-xl font-semibold my-5">Reset password</h2>
             </div>
-            <button type="submit" class="button w-full mt-5">
-                Next
-            </button>
-        </form>
+    
+            <form class="space-y-4" on:submit={() => false}>
+                <div>
+                    <label class="label" for="login-email">Email</label>
+                    <input
+                        type="email"
+                        class="input"
+                        id="login-email"
+                        placeholder="Email address"
+                    />
+                </div>
+    
+                <button type="submit" class="button w-full"> Continue </button>
+            </form>
+        </div>
+    
+        <div class="w-full p-6 md:text-center">
+            Or <a href="/login">Login</a>
+        </div>
     </div>
 </div>
