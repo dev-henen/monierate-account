@@ -22,6 +22,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"buffer": "^6.0.3",
 		"date-and-time": "^3.6.0",
 		"flowbite-typography": "^1.0.5"
 	}

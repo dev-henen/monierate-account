@@ -1,10 +1,90 @@
 <script lang="ts">
     import { writable } from "svelte/store";
+    import { togglePopup } from "$lib/functions";
+    import { setCookie } from "$lib/functions";
+    import { user } from "$lib/stores/user";
+    import { goto } from "$app/navigation";
+    import { notify } from "$lib/notification";
 
     let showPassword = writable(false);
 
     function togglePasswordVisibility() {
         showPassword.update((value) => !value);
+    }
+
+    let email: string = "";
+    let password: string = "";
+    let emailError: string = "";
+    let passwordError: string = "";
+    let error: string = "";
+    let disableActionButton: boolean = false;
+    const validateEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    const login = async () => {
+        emailError = email === "" ? "error" : "";
+        passwordError = password === "" ? "error" : "";
+        error = "";
+
+        if (emailError || passwordError) {
+            return;
+        }
+
+        if (!validateEmail.test(email)) {
+            emailError = "error";
+            error = "Invalid email format. Please use a valid email address";
+            return;
+        }
+
+        const payload = {
+            email,
+            password,
+        };
+
+        try {
+            disableActionButton = true;
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            // Ensure response is properly handled
+            const rawResponse = await response.json();
+            const getResponse = JSON.parse(rawResponse);
+
+            if (getResponse.status === "success") {
+                const getToken = getResponse.data.user_token;
+                if (getToken) {
+                    setCookie("auth_token", getToken, 30); // Store token for 30 days
+                    handleLogin(getResponse); // Handle login
+                    notify("Logged in successfully");
+                    goto("/"); // Redirect to dashboard
+                } else {
+                    notify(
+                        "An error occurred while trying to log you in. Please try again later.",
+                    );
+                }
+            } else if (getResponse.status === "error") {
+                error = getResponse.message || "An error occurred.";
+            } else {
+                notify("An unknown error occurred.");
+            }
+            disableActionButton = false;
+        } catch (error) {
+            disableActionButton = false;
+            console.error("Error during login:", error);
+            notify("Something went wrong. Please try again later.");
+        }
+    };
+
+    async function handleLogin(response: any) {
+        user.set({
+            email: response.data.user.email,
+            plan: response.data.user.plan.name,
+            credit_balance: response.data.user.usage.credit_balance,
+            is_active: response.data.user.is_active,
+            token: response.data.user_token,
+        });
     }
 </script>
 
@@ -12,12 +92,9 @@
     <title>Login - Monierate</title>
 </svelte:head>
 
-<div class="flex items-center justify-center md:min-h-screen">
+<div class="flex items-center justify-center md:min-h-screen md:mt-12">
     <div class="w-full max-w-[100%] md:max-w-[500px]">
-
-        <div
-            class="rounded-lg p-12 relative md:border md:dark:border-gray-700"
-        >
+        <div class="rounded-lg p-12 relative md:border md:dark:border-gray-700">
             <div class="mb-8">
                 <img
                     src="/monierate-logo.png"
@@ -33,26 +110,33 @@
                 />
                 <h2 class="text-2xl font-semibold">Login</h2>
             </div>
-    
+
             <div>
+                <span class="text-[0.9em] text-red-500 mb-6 block">
+                    {error}
+                </span>
                 <div>
                     <label class="label" for="login-email">Email</label>
                     <input
                         type="email"
-                        class="input"
+                        class="input {emailError}"
                         id="login-email"
                         placeholder="Email address"
+                        bind:value={email}
+                        on:change={() => (emailError = "")}
                     />
                 </div>
-    
+
                 <div>
                     <label class="label" for="login-password">Password</label>
                     <div class="relative">
                         <input
                             type={$showPassword ? "text" : "password"}
-                            class="input pr-10"
+                            class="input pr-10 {passwordError}"
                             id="login-password"
                             placeholder="Minimum 8 characters"
+                            bind:value={password}
+                            on:change={() => (passwordError = "")}
                         />
                         <button
                             type="button"
@@ -102,16 +186,21 @@
                 </div>
 
                 <div class="block text-sm text-gray-600 mb-6">
-                    <a
-                        href="/login/reset-password"
-                        class="text-blue-500">Forgot your password?</a
+                    <a href="/login/reset-password" class="text-blue-500"
+                        >Forgot your password?</a
                     >
                 </div>
-    
-                <button class="button w-full"> Login </button>
+
+                <button
+                    class="button w-full"
+                    on:click={login}
+                    disabled={disableActionButton}
+                >
+                    Login
+                </button>
             </div>
         </div>
-    
+
         <div class="w-full px-12 md:p-12 md:text-center">
             or <a href="/signup">Get an account</a>
         </div>

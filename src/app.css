@@ -40,6 +40,11 @@
         @apply block border border-gray-400 text-black bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:font-semibold py-4 px-4 mb-4 w-full rounded-lg;
         box-shadow: none;
     }
+    .input.error, .select.error {
+        @apply border-red-900 dark:border-red-700;
+        box-shadow: none;
+        outline: 0;
+    }
     .input:focus, .input:hover {
         @apply border-gray-900 dark:border-gray-700;
         box-shadow: none;
@@ -55,7 +60,10 @@
         @apply text-white bg-green-600 hover:bg-green-700 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:text-gray-900 dark:focus:ring-green-700;
         cursor: pointer;
     }
-
+    .button[disabled] {
+        @apply bg-gray-400 dark:bg-gray-500 cursor-not-allowed;
+    }
+    
     .select {
         @apply py-4;
     }
