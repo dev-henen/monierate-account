@@ -1,9 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import { togglePopup } from "$lib/functions";
     import { setCookie } from "$lib/functions";
-    import { user } from "$lib/stores/user";
-    import { goto } from "$app/navigation";
     import { notify } from "$lib/notification";
 
     let showPassword = writable(false);
@@ -56,9 +53,8 @@
                 const getToken = getResponse.data.user_token;
                 if (getToken) {
                     setCookie("auth_token", getToken, 30); // Store token for 30 days
-                    handleLogin(getResponse); // Handle login
                     notify("Logged in successfully");
-                    goto("/"); // Redirect to dashboard
+                    window.location.replace('/'); // Redirect to dashboard
                 } else {
                     notify(
                         "An error occurred while trying to log you in. Please try again later.",
@@ -76,16 +72,6 @@
             notify("Something went wrong. Please try again later.");
         }
     };
-
-    async function handleLogin(response: any) {
-        user.set({
-            email: response.data.user.email,
-            plan: response.data.user.plan.name,
-            credit_balance: response.data.user.usage.credit_balance,
-            is_active: response.data.user.is_active,
-            token: response.data.user_token,
-        });
-    }
 </script>
 
 <svelte:head>

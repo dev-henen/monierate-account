@@ -2,11 +2,11 @@ import { browser } from '$app/environment';
 import { invalidate, invalidateAll } from '$app/navigation';
 import date from 'date-and-time';
 import { Timezone } from './stores/timezone';
+import { notify } from './notification';
 
 export const timezone = Timezone('UTC');
 
-export function bearer(method: string, bearer: string, body: object)
-{
+export function bearer(method: string, bearer: string, body: object) {
 
     const request: any = {
         headers: {
@@ -22,8 +22,7 @@ export function bearer(method: string, bearer: string, body: object)
     return request;
 }
 
-export function toggleMessage(message: string, type = "error")
-{
+export function toggleMessage(message: string, type = "error") {
     let alert = document.querySelector("#alert");
 
     if (alert != null) {
@@ -50,8 +49,7 @@ export function toggleMessage(message: string, type = "error")
     }
 }
 
-export function togglePopup(response: any)
-{
+export function togglePopup(response: any) {
     let popup: any = document.querySelector("#popup");
     let message: any = document.querySelector("#popup-message");
 
@@ -75,12 +73,10 @@ export function clearPopup() {
     return
 }
 
-export function toggleButtonLoad(selector: string, timeout = 3000)
-{
+export function toggleButtonLoad(selector: string, timeout = 3000) {
     let button: any = document.querySelector(selector);
 
-    if (button != null)
-    {
+    if (button != null) {
         button.classList.add("loading");
         button.disabled = true;
 
@@ -109,7 +105,7 @@ export const format = (dt: any, d = "datetime") => {
 
 export function friendlyDate(dt: any, d = "datetime") {
     let getTimezone = timezone.get();
-    if(browser) {
+    if (browser) {
         getTimezone = getUserTimezone();
     }
     const dateString = format(dt, d);
@@ -124,8 +120,8 @@ export function friendlyDate(dt: any, d = "datetime") {
     const diffInSeconds = Math.floor((userNow.getTime() - userDate.getTime()) / 1000);
 
     const isSameDay = userDate.getDate() === userNow.getDate() &&
-                      userDate.getMonth() === userNow.getMonth() &&
-                      userDate.getFullYear() === userNow.getFullYear();
+        userDate.getMonth() === userNow.getMonth() &&
+        userDate.getFullYear() === userNow.getFullYear();
 
     if (diffInSeconds < 900) {
         return 'Just now';
@@ -133,10 +129,10 @@ export function friendlyDate(dt: any, d = "datetime") {
         const minutes = Math.floor(diffInSeconds / 60);
         return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     } else if (isSameDay) {
-        return `Today, ${userDate.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
+        return `Today, ${userDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
             minute: '2-digit',
-            timeZone: getTimezone 
+            timeZone: getTimezone
         })}`;
     } else if (diffInSeconds < 86400) {
         const hours = Math.floor(diffInSeconds / 3600);
@@ -156,21 +152,21 @@ export function friendlyDate(dt: any, d = "datetime") {
 // ✅ Or get a Date object with the specified Time zone
 function changeTimeZone(date: any) {
     let timeZone = timezone.get();
-    if(browser) {
+    if (browser) {
         timeZone = getUserTimezone();
     }
     if (typeof date === 'string') {
-      return new Date(
-        new Date(date).toLocaleString('en-US', {
-          timeZone,
-        }),
-      );
+        return new Date(
+            new Date(date).toLocaleString('en-US', {
+                timeZone,
+            }),
+        );
     }
-  
+
     return new Date(
-      date.toLocaleString('en-US', {
-        timeZone,
-      }),
+        date.toLocaleString('en-US', {
+            timeZone,
+        }),
     );
 }
 
@@ -187,7 +183,7 @@ export function getCookie(key: string) {
         var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
         return keyValue ? keyValue[2] : null;
     }
-    
+
     return null
 }
 
@@ -230,28 +226,65 @@ export async function fireInvalidateAll() {
     }
 }
 
-export function scrollToSection(id: string, options = { 
-    duration: 500, 
+export function scrollToSection(id: string, options = {
+    duration: 500,
     offset: 0,  // Offset from the top in pixels
-    behavior: 'smooth' as ScrollBehavior 
-  }) {
+    behavior: 'smooth' as ScrollBehavior
+}) {
     const element = document.getElementById(id);
-    
+
     if (element) {
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - options.offset;
-  
-      // Add a CSS class for animation
-      element.classList.add('highlight-section');
-  
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: options.behavior
-      });
-  
-      // Remove the animation class after it completes
-      setTimeout(() => {
-        element.classList.remove('highlight-section');
-      }, options.duration);
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - options.offset;
+
+        // Add a CSS class for animation
+        element.classList.add('highlight-section');
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: options.behavior
+        });
+
+        // Remove the animation class after it completes
+        setTimeout(() => {
+            element.classList.remove('highlight-section');
+        }, options.duration);
     }
-  }
+}
+
+export async function copyToClipboard(content: string) {
+    try {
+        await navigator.clipboard.writeText(content);
+        notify("Copied to clipboard!");
+    } catch (error) {
+        console.error("Failed to copy text: ", error);
+    }
+};
+
+export function formatISODateTime(isoDate: string, includeTime = false, includeTimezone = false) {
+    const dateObj = new Date(isoDate);
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+    };
+    if (!includeTime) {
+        delete options.hour;
+        delete options.minute;
+        delete options.second;
+    }
+    if (!includeTimezone) {
+        delete options.timeZoneName;
+    }
+    const formattedDate = dateObj.toLocaleDateString('en-US', options);
+    return formattedDate;
+}
+
+export function formatNumber(value: number, locales: string = 'en-US', options: Intl.NumberFormatOptions = {}): string {
+    const formatter = new Intl.NumberFormat(locales, options);
+    return formatter.format(value);
+}

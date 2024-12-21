@@ -2,8 +2,6 @@
     import { writable } from "svelte/store";
     import { togglePopup } from "$lib/functions";
     import { setCookie } from "$lib/functions";
-    import { user } from "$lib/stores/user";
-    import { goto } from "$app/navigation";
     import { notify } from "$lib/notification";
 
     let showPassword = writable(false);
@@ -69,9 +67,8 @@
                 const getToken = getResponse.data.token;
                 if (getToken) {
                     setCookie("auth_token", getToken, 165); // Store token for 165 days
-                    handleSignup(getResponse); // Handle signup
                     notify("Account created successfully.");
-                    goto("/"); // Redirect to dashboard
+                    window.location.replace('/'); // Redirect to dashboard
                 } else {
                     togglePopup({
                         status: "error",
@@ -90,16 +87,6 @@
             notify("Something went wrong. Please try again later.");
         }
     };
-
-    async function handleSignup(response: any) {
-        user.set({
-            email: response.data.user.email,
-            plan: response.data.user.plan.name,
-            credit_balance: response.data.user.usage.credit_balance,
-            is_active: response.data.user.is_active,
-            token: response.data.token,
-        });
-    }
 </script>
 
 <svelte:head>

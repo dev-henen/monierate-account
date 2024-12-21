@@ -1,12 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
     export let title: string = "Dashboard";
 
     let showMenu = false;
     function toggleMenu() {
         showMenu = !showMenu;
     }
+
+    let currentPath = '';
+    onMount(() => {
+        currentPath = window.location.pathname;
+    });
+
 </script>
 
 <svelte:head>
@@ -74,7 +79,7 @@
 
             <button
                 aria-label="Menu"
-                class="button p-2 px-3 md:hidden bg-transparent text-gray-500 dark:text-gray-300 text-2xl"
+                class="button p-2 px-3 md:hidden bg-transparent hover:bg-transparent text-gray-500 dark:text-gray-300 text-2xl"
                 on:click={toggleMenu}
             >
                 <i class="fa fa-bars"></i>
@@ -113,7 +118,7 @@
                     <a
                         href="/"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md sidebar-active-link"
+                                    sidebar-hover-link rounded-md {currentPath === '/' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-dashboard pr-2"></i> Dashboard
                     </a>
@@ -129,18 +134,18 @@
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/app-ids"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/app-ids' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-fingerprint pr-2"></i> App IDs
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/get-started"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/get-started' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-rocket pr-2"></i> Getting Started
                     </a>
@@ -156,9 +161,9 @@
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/usage-statistics"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/usage-statistics' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-chart-bar pr-2"></i> Usage Statistics
                     </a>
@@ -174,27 +179,27 @@
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/edit-account-details"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/edit-account-details' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-user-edit pr-2"></i> Edit Account Details
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/subscription-plan"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/subscription-plan' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-box pr-2"></i> Subscription Plan
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/email-notifications"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/email-notifications' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-bell pr-2"></i> Email Notifications
                     </a>
@@ -210,18 +215,18 @@
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/payment-details"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/payment-details' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-credit-card pr-2"></i> Payment Details
                     </a>
                 </li>
                 <li>
                     <a
-                        href="/"
+                        href="/billing-history"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md"
+                                    sidebar-hover-link rounded-md {currentPath === '/billing-history' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-history pr-2"></i> Billing History
                     </a>
@@ -232,7 +237,7 @@
 
     <!-- Main Content Area -->
     <div
-        class="p-5 mt-[90px] w-full {showMenu
+        class="p-5 md:p-20 mt-[90px] md:mt-[50px] w-full {showMenu
             ? 'ml-[300px]'
             : ''} md:w-[calc(100%-300px)] md:ml-[300px] transition-all duration-300"
     >

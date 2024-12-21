@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"buffer": "^6.0.3",
+		"chart.js": "^4.4.7",
 		"date-and-time": "^3.6.0",
 		"flowbite-typography": "^1.0.5",
 		"tailwind-scrollbar": "^3.1.0"
