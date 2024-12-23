@@ -76,146 +76,77 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#if currentUser.plan}
-                        {#if Array.isArray(currentUser.plan)}
-                            {#each currentUser.plan as item}
-                                {#if item.is_active === true}
-                                    <tr>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            {item.plan.name || "API Key"}
-                                            <a
-                                                href="/api-keys/{item.plan
-                                                    ._id}/edit"
-                                                class="text-[0.8em] ml-2"
-                                            >
-                                                <i class="fas fa-edit"></i> Edit</a
-                                            >
-                                        </td>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div
-                                                class="flex items-center gap-2"
-                                            >
-                                                <input
-                                                    type="text"
-                                                    class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                                    value={item.plan._id}
-                                                    readonly
-                                                />
-                                                <button
-                                                    class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                                    title="Copy API Key"
-                                                    aria-label="Copy API Key"
-                                                    on:click={() =>
-                                                        copyToClipboard(
-                                                            item.plan._id,
-                                                        )}
-                                                >
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                            >{item.plan.created_at
-                                                ? formatISODateTime(
-                                                      item.plan.created_at,
-                                                  )
-                                                : "N/A"}</td
-                                        >
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                            >{item.plan.updated_at
-                                                ? formatISODateTime(
-                                                      item.plan.updated_at,
-                                                  )
-                                                : "N/A"}</td
-                                        >
-                                        <td
-                                            class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            <a
-                                                href="/api-keys/{item.plan
-                                                    ._id}/deactivate"
-                                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                                title="Deactivate API Key"
-                                            >
-                                                ✖
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {/if}
-                            {/each}
-                        {:else if currentUser.plan.is_active === true}
-                            <tr>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
+                    {#if currentUser.plan && currentUser.plan.is_active === true}
+                        <tr>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                            >
+                                {currentUser.plan.name || "API Key"}
+                                <a
+                                    href="/api-keys/{currentUser.plan._id}/edit"
+                                    class="text-[0.8em] ml-2"
                                 >
-                                    {currentUser.plan.name || "API Key"}
-                                    <a
-                                        href="/api-keys/{currentUser.plan
-                                            ._id}/edit"
-                                        class="text-[0.8em] ml-2"
+                                    <i class="fas fa-edit"></i> Edit</a
+                                >
+                            </td>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
+                                        value={currentUser.plan._id}
+                                        readonly
+                                    />
+                                    <button
+                                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+                                        title="Copy API Key"
+                                        aria-label="Copy API Key"
+                                        on:click={() =>
+                                            copyToClipboard(
+                                                currentUser.plan._id,
+                                            )}
                                     >
-                                        <i class="fas fa-edit"></i> Edit</a
-                                    >
-                                </td>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                >{currentUser.plan.created_at
+                                    ? formatISODateTime(
+                                          currentUser.plan.created_at,
+                                      )
+                                    : "N/A"}</td
+                            >
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                >{currentUser.plan.updated_at
+                                    ? formatISODateTime(
+                                          currentUser.plan.updated_at,
+                                      )
+                                    : "N/A"}</td
+                            >
+                            <td
+                                class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
+                            >
+                                <a
+                                    href="/api-keys/{currentUser.plan
+                                        ._id}/deactivate"
+                                    class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+                                    title="Deactivate API Key"
                                 >
-                                    <div class="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                            value={currentUser.plan._id}
-                                            readonly
-                                        />
-                                        <button
-                                            class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                            title="Copy API Key"
-                                            aria-label="Copy API Key"
-                                            on:click={() =>
-                                                copyToClipboard(
-                                                    currentUser.plan._id,
-                                                )}
-                                        >
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                    >{currentUser.plan.created_at
-                                        ? formatISODateTime(
-                                              currentUser.plan.created_at,
-                                          )
-                                        : "N/A"}</td
-                                >
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                    >{currentUser.plan.updated_at
-                                        ? formatISODateTime(
-                                              currentUser.plan.updated_at,
-                                          )
-                                        : "N/A"}</td
-                                >
-                                <td
-                                    class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                                >
-                                    <a
-                                        href="/api-keys/{currentUser.plan
-                                            ._id}/deactivate"
-                                        class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                        title="Deactivate API Key"
-                                    >
-                                        ✖
-                                    </a>
-                                </td>
-                            </tr>
-                        {/if}
+                                    ✖
+                                </a>
+                            </td>
+                        </tr>
+                    {:else}
+                        <tr>
+                            <td class="colspan-5 p-10 text-center" colspan="5">
+                                They are no active API keys
+                            </td>
+                        </tr>
                     {/if}
                 </tbody>
             </table>
@@ -311,148 +242,78 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#if currentUser.plan}
-                        {#if Array.isArray(currentUser.plan)}
-                            {#each currentUser.plan as item}
-                                {#if item.is_active === false}
-                                    <tr>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            {item.plan.name || "API Key"}
-                                            <a
-                                                href="/api-keys/{item.plan
-                                                    ._id}/edit"
-                                                class="text-[0.8em] ml-2"
-                                            >
-                                                <i class="fas fa-edit"></i> Edit</a
-                                            >
-                                        </td>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            <div
-                                                class="flex items-center gap-2"
-                                            >
-                                                <input
-                                                    type="text"
-                                                    class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                                    value={item.plan._id}
-                                                    readonly
-                                                />
-                                                <button
-                                                    class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                                    title="Copy API Key"
-                                                    aria-label="Copy API Key"
-                                                    on:click={() =>
-                                                        copyToClipboard(
-                                                            item.plan._id,
-                                                        )}
-                                                >
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                            >{item.plan.created_at
-                                                ? formatISODateTime(
-                                                      item.plan.created_at,
-                                                  )
-                                                : "N/A"}</td
-                                        >
-                                        <td
-                                            class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                            >{item.plan.updated_at
-                                                ? formatISODateTime(
-                                                      item.plan.updated_at,
-                                                  )
-                                                : "N/A"}</td
-                                        >
-                                        <td
-                                            class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                                        >
-                                            <a
-                                                href="/api-keys/{item.plan
-                                                    ._id}/deactivate"
-                                                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
-                                                title="Deactivate API Key"
-                                                aria-label="Deactivate API Key"
-                                            >
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {/if}
-                            {/each}
-                        {:else if currentUser.plan.is_active === false}
-                            <tr>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
+                    {#if currentUser.plan && currentUser.plan.is_active === false}
+                        <tr>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                            >
+                                {currentUser.plan.name || "API Key"}
+                                <a
+                                    href="/api-keys/{currentUser.plan._id}/edit"
+                                    class="text-[0.8em] ml-2"
                                 >
-                                    {currentUser.plan.name || "API Key"}
-                                    <a
-                                        href="/api-keys/{currentUser.plan
-                                            ._id}/edit"
-                                        class="text-[0.8em] ml-2"
+                                    <i class="fas fa-edit"></i> Edit</a
+                                >
+                            </td>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
+                                        value={currentUser.plan._id}
+                                        readonly
+                                    />
+                                    <button
+                                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+                                        title="Copy API Key"
+                                        aria-label="Copy API Key"
+                                        on:click={() =>
+                                            copyToClipboard(
+                                                currentUser.plan._id,
+                                            )}
                                     >
-                                        <i class="fas fa-edit"></i> Edit</a
-                                    >
-                                </td>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                >{currentUser.plan.created_at
+                                    ? formatISODateTime(
+                                          currentUser.plan.created_at,
+                                      )
+                                    : "N/A"}</td
+                            >
+                            <td
+                                class="p-4 border-b border-gray-200 dark:border-gray-800"
+                                >{currentUser.plan.updated_at
+                                    ? formatISODateTime(
+                                          currentUser.plan.updated_at,
+                                      )
+                                    : "N/A"}</td
+                            >
+                            <td
+                                class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
+                            >
+                                <a
+                                    href="/api-keys/{currentUser.plan
+                                        ._id}/deactivate"
+                                    class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
+                                    title="Deactivate API Key"
+                                    aria-label="Deactivate API Key"
                                 >
-                                    <div class="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                            value={currentUser.plan._id}
-                                            readonly
-                                        />
-                                        <button
-                                            class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                            title="Copy API Key"
-                                            aria-label="Copy API Key"
-                                            on:click={() =>
-                                                copyToClipboard(
-                                                    currentUser.plan._id,
-                                                )}
-                                        >
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                    >{currentUser.plan.created_at
-                                        ? formatISODateTime(
-                                              currentUser.plan.created_at,
-                                          )
-                                        : "N/A"}</td
-                                >
-                                <td
-                                    class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                    >{currentUser.plan.updated_at
-                                        ? formatISODateTime(
-                                              currentUser.plan.updated_at,
-                                          )
-                                        : "N/A"}</td
-                                >
-                                <td
-                                    class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                                >
-                                    <a
-                                        href="/api-keys/{currentUser.plan
-                                            ._id}/deactivate"
-                                        class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
-                                        title="Deactivate API Key"
-                                        aria-label="Deactivate API Key"
-                                    >
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {/if}
+                                    <i class="fas fa-check"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {:else}
+                        <tr>
+                            <td class="colspan-5 p-10 text-center" colspan="5">
+                                They are no inactive API keys
+                            </td>
+                        </tr>
                     {/if}
                 </tbody>
             </table>
