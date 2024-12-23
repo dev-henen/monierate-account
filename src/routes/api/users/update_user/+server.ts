@@ -20,7 +20,6 @@ export async function POST({ request, fetch, cookies }) {
     if (!authToken) {
         return json({ error: "Not authenticated" }, { status: 401 });
     } else {
-        payload.user_token = authToken;
         const response = await fetch(`/api/users/get_user?user_token=${authToken}`);
         if (!response.ok) {
             return json({ error: "Failed to fetch user" }, { status: 500 });
@@ -30,36 +29,38 @@ export async function POST({ request, fetch, cookies }) {
             currentUser = currentUser.data;
             if (!currentUser) return json({ error: "User not found" }, { status: 404 });
 
-            if (email && currentUser.email !== email) {
-                payload.email = email;
+            if (email?.trim() && currentUser.email !== email.trim()) {
+                payload.email = email.trim();
             }
 
-            if (newPassword && currentUser.password !== newPassword) {
-                payload.password = newPassword;
+            if (newPassword?.trim() && currentUser.password !== newPassword.trim()) {
+                payload.password = newPassword.trim();
             }
 
-            if (firstName && currentUser.firstname !== firstName) {
-                payload.firstname = firstName;
+            if (firstName?.trim() && currentUser.firstname !== firstName.trim()) {
+                payload.firstname = firstName.trim();
             }
 
-            if (lastName && currentUser.lastname !== lastName) {
-                payload.lastname = lastName;
+            if (lastName?.trim() && currentUser.lastname !== lastName.trim()) {
+                payload.lastname = lastName.trim();
             }
 
-            if (backupContactEmail && currentUser.backupContactEmail !== backupContactEmail) {
-                payload.backup_contact_email = backupContactEmail;
+            if (backupContactEmail?.trim() && currentUser.backupContactEmail !== backupContactEmail.trim()) {
+                payload.backup_contact_email = backupContactEmail.trim();
             }
 
-            if (website && currentUser.website !== website) {
-                payload.website = website;
+            if (website?.trim() && currentUser.website !== website.trim()) {
+                payload.website = website.trim();
             }
 
-            if (billingContactEmail && currentUser.billingContactEmail !== billingContactEmail) {
-                payload.billing_contact_email = billingContactEmail;
+            if (billingContactEmail?.trim() && currentUser.billingContactEmail !== billingContactEmail.trim()) {
+                payload.billing_contact_email = billingContactEmail.trim();
             }
 
             if (isEmpty(payload))
                 return json({ message: "No changes were made" }, { status: 400 });
+
+            payload.user_token = authToken;
 
             const endpoint = getAccountEndpoint("/users/update_user");
             const res = await fetch(endpoint, basicAuth('POST', payload));

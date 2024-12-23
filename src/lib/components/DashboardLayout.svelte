@@ -7,11 +7,10 @@
         showMenu = !showMenu;
     }
 
-    let currentPath = '';
+    let currentPath = "";
     onMount(() => {
         currentPath = window.location.pathname;
     });
-
 </script>
 
 <svelte:head>
@@ -118,36 +117,12 @@
                     <a
                         href="/"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-dashboard pr-2"></i> Dashboard
-                    </a>
-                </li>
-
-                <!--Integration-->
-                <li>
-                    <div
-                        class="text-sm text-gray-500 dark:text-gray-400 p-4 pt-5"
-                    >
-                        Integration
-                    </div>
-                </li>
-                <li>
-                    <a
-                        href="/app-ids"
-                        class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/app-ids' ? 'sidebar-active-link' : ''}"
-                    >
-                        <i class="fas fa-fingerprint pr-2"></i> App IDs
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="/get-started"
-                        class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/get-started' ? 'sidebar-active-link' : ''}"
-                    >
-                        <i class="fas fa-rocket pr-2"></i> Getting Started
                     </a>
                 </li>
 
@@ -161,9 +136,36 @@
                 </li>
                 <li>
                     <a
+                        href="/get-started"
+                        class="block px-3 py-3 text-gray-300
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/get-started'
+                            ? 'sidebar-active-link'
+                            : ''}"
+                    >
+                        <i class="fas fa-rocket pr-2"></i> Getting Started
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="/api-keys"
+                        class="block px-3 py-3 text-gray-300
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/api-keys'
+                            ? 'sidebar-active-link'
+                            : ''}"
+                    >
+                        <i class="fas fa-fingerprint pr-2"></i> API Keys
+                    </a>
+                </li>
+                <li>
+                    <a
                         href="/usage-statistics"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/usage-statistics' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/usage-statistics'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-chart-bar pr-2"></i> Usage Statistics
                     </a>
@@ -181,7 +183,10 @@
                     <a
                         href="/edit-account-details"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/edit-account-details' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/edit-account-details'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-user-edit pr-2"></i> Edit Account Details
                     </a>
@@ -190,12 +195,15 @@
                     <a
                         href="/subscription-plan"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/subscription-plan' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/subscription-plan'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-box pr-2"></i> Subscription Plan
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a
                         href="/email-notifications"
                         class="block px-3 py-3 text-gray-300
@@ -203,7 +211,7 @@
                     >
                         <i class="fas fa-bell pr-2"></i> Email Notifications
                     </a>
-                </li>
+                </li> -->
 
                 <!--Billing-->
                 <li>
@@ -217,7 +225,10 @@
                     <a
                         href="/payment-details"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/payment-details' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/payment-details'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-credit-card pr-2"></i> Payment Details
                     </a>
@@ -226,7 +237,10 @@
                     <a
                         href="/billing-history"
                         class="block px-3 py-3 text-gray-300
-                                    sidebar-hover-link rounded-md {currentPath === '/billing-history' ? 'sidebar-active-link' : ''}"
+                                    sidebar-hover-link rounded-md {currentPath ===
+                        '/billing-history'
+                            ? 'sidebar-active-link'
+                            : ''}"
                     >
                         <i class="fas fa-history pr-2"></i> Billing History
                     </a>
@@ -259,7 +273,9 @@
             </li>
             <li>•</li>
             <li>
-                <a href="https://monierate.com/policy/data">Terms & Conditions</a>
+                <a href="https://monierate.com/policy/data"
+                    >Terms & Conditions</a
+                >
             </li>
         </ul>
 

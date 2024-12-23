@@ -34,13 +34,13 @@
         calculateMonthlyUsagePercentage(currentUser);
 </script>
 
-<DashboardLayout title="App IDs">
+<DashboardLayout title="API Keys">
     <div class="content">
-        <h2 class="text-2xl font-semibold mb-4">App IDs</h2>
+        <h2 class="text-2xl font-semibold mb-4">API Keys</h2>
         <div class="mb-10">
-            Here are the active App IDs for your account, which you can
+            Here are the active API keys for your account, which you can
             currently use to access the Open Exchange Rates API. You can add and
-            remove App IDs or expire old ones.
+            remove API keys or expire old ones.
         </div>
     </div>
 
@@ -59,7 +59,7 @@
                         >
                         <th
                             class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >App ID</th
+                            >API Key</th
                         >
                         <th
                             class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
@@ -84,9 +84,9 @@
                                         <td
                                             class="p-4 border-b border-gray-200 dark:border-gray-800"
                                         >
-                                            {item.plan.name || "App ID"}
+                                            {item.plan.name || "API Key"}
                                             <a
-                                                href="/app-ids/{item.plan
+                                                href="/api-keys/{item.plan
                                                     ._id}/edit"
                                                 class="text-[0.8em] ml-2"
                                             >
@@ -107,8 +107,8 @@
                                                 />
                                                 <button
                                                     class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                                    title="Copy App ID"
-                                                    aria-label="Copy App ID"
+                                                    title="Copy API Key"
+                                                    aria-label="Copy API Key"
                                                     on:click={() =>
                                                         copyToClipboard(
                                                             item.plan._id,
@@ -138,10 +138,10 @@
                                             class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
                                         >
                                             <a
-                                                href="/app-ids/{item.plan
+                                                href="/api-keys/{item.plan
                                                     ._id}/deactivate"
                                                 class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                                title="Deactivate App ID"
+                                                title="Deactivate API Key"
                                             >
                                                 ✖
                                             </a>
@@ -154,9 +154,9 @@
                                 <td
                                     class="p-4 border-b border-gray-200 dark:border-gray-800"
                                 >
-                                    {currentUser.plan.name || "App ID"}
+                                    {currentUser.plan.name || "API Key"}
                                     <a
-                                        href="/app-ids/{currentUser.plan
+                                        href="/api-keys/{currentUser.plan
                                             ._id}/edit"
                                         class="text-[0.8em] ml-2"
                                     >
@@ -175,8 +175,8 @@
                                         />
                                         <button
                                             class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                            title="Copy App ID"
-                                            aria-label="Copy App ID"
+                                            title="Copy API Key"
+                                            aria-label="Copy API Key"
                                             on:click={() =>
                                                 copyToClipboard(
                                                     currentUser.plan._id,
@@ -206,10 +206,10 @@
                                     class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
                                 >
                                     <a
-                                        href="/app-ids/{currentUser.plan
+                                        href="/api-keys/{currentUser.plan
                                             ._id}/deactivate"
                                         class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                        title="Deactivate App ID"
+                                        title="Deactivate API Key"
                                     >
                                         ✖
                                     </a>
@@ -229,7 +229,7 @@
                     class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-md text-gray-800 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     bind:value={choosedAppIDName}
                 />
-                <button class="button"> Generate New App ID </button>
+                <button class="button"> Generate an API Key </button>
                 <span class="text-gray-600 dark:text-gray-400"
                     >({formatNumber(
                         getMonthlyUsagePercentage.remainingRequests,
@@ -274,9 +274,9 @@
 
     <!--INACTIVE IDs-->
     <div class="content mt-20">
-        <h2 class="text-2xl font-semibold mb-4">Inactive App IDs</h2>
+        <h2 class="text-2xl font-semibold mb-4">Inactive API Keys</h2>
         <div class="mb-10">
-            The following App IDs are inactive and cannot be used to access the
+            The following API Keys are inactive and cannot be used to access the
             API:
         </div>
 
@@ -294,7 +294,7 @@
                         >
                         <th
                             class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >App ID</th
+                            >API Key</th
                         >
                         <th
                             class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
@@ -319,9 +319,9 @@
                                         <td
                                             class="p-4 border-b border-gray-200 dark:border-gray-800"
                                         >
-                                            {item.plan.name || "App ID"}
+                                            {item.plan.name || "API Key"}
                                             <a
-                                                href="/app-ids/{item.plan
+                                                href="/api-keys/{item.plan
                                                     ._id}/edit"
                                                 class="text-[0.8em] ml-2"
                                             >
@@ -342,8 +342,8 @@
                                                 />
                                                 <button
                                                     class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                                    title="Copy App ID"
-                                                    aria-label="Copy App ID"
+                                                    title="Copy API Key"
+                                                    aria-label="Copy API Key"
                                                     on:click={() =>
                                                         copyToClipboard(
                                                             item.plan._id,
@@ -373,11 +373,11 @@
                                             class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
                                         >
                                             <a
-                                                href="/app-ids/{item.plan
+                                                href="/api-keys/{item.plan
                                                     ._id}/deactivate"
                                                 class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
-                                                title="Deactivate App ID"
-                                                aria-label="Deactivate App ID"
+                                                title="Deactivate API Key"
+                                                aria-label="Deactivate API Key"
                                             >
                                                 <i class="fas fa-check"></i>
                                             </a>
@@ -390,9 +390,9 @@
                                 <td
                                     class="p-4 border-b border-gray-200 dark:border-gray-800"
                                 >
-                                    {currentUser.plan.name || "App ID"}
+                                    {currentUser.plan.name || "API Key"}
                                     <a
-                                        href="/app-ids/{currentUser.plan
+                                        href="/api-keys/{currentUser.plan
                                             ._id}/edit"
                                         class="text-[0.8em] ml-2"
                                     >
@@ -411,8 +411,8 @@
                                         />
                                         <button
                                             class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                            title="Copy App ID"
-                                            aria-label="Copy App ID"
+                                            title="Copy API Key"
+                                            aria-label="Copy API Key"
                                             on:click={() =>
                                                 copyToClipboard(
                                                     currentUser.plan._id,
@@ -442,11 +442,11 @@
                                     class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
                                 >
                                     <a
-                                        href="/app-ids/{currentUser.plan
+                                        href="/api-keys/{currentUser.plan
                                             ._id}/deactivate"
                                         class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
-                                        title="Deactivate App ID"
-                                        aria-label="Deactivate App ID"
+                                        title="Deactivate API Key"
+                                        aria-label="Deactivate API Key"
                                     >
                                         <i class="fas fa-check"></i>
                                     </a>

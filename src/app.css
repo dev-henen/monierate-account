@@ -87,20 +87,6 @@
         text-transform: none;
     }
 
-    .top-banner {
-        @apply py-8 mx-auto px-4 md:px-24 flex justify-center items-center;
-    }
-
-    .top-brand {
-        @apply w-[128px] md:w-[148px];
-    }
-
-    .logo-rounded {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-    }
-
     .notification {
         @apply block bg-white shadow border border-gray-800 p-3 shadow-lg text-black;
     }

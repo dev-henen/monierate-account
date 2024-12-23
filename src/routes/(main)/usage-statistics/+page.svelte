@@ -221,7 +221,8 @@
                     <div class="w-[95%] flex">
                         <div class="h-[32px] bg-gray-500 rounded w-full">
                             <div
-                                class="h-[32px] bg-blue-500 rounded w-[{getMonthlyUsagePercentage.usedPercentage}%]"
+                                class="h-[32px] bg-blue-500 rounded"
+                                style="width: {getMonthlyUsagePercentage.usedPercentage}%;"
                             ></div>
                         </div>
                     </div>
@@ -240,17 +241,48 @@
             <canvas bind:this={canvas}></canvas>
         </div>
     </div>
-    
+
     <div class="content">
-        <h3 class="text-2xl font-semibold mb-6">Frequently Answered Question</h3>
-        <h3 class="text-xl font-semibold mb-6">What counts as one API request?</h3>
+        <h3 class="text-2xl font-semibold mb-6">
+            Frequently Answered Question
+        </h3>
+        <h3 class="text-xl font-semibold mb-6">
+            What counts as one API request?
+        </h3>
         <ul class="ml-2 mb-6">
-            <li class="mb-4">Each HTTP request to our latest.json, historical/*.json and /convert API endpoints counts as a single request towards your usage quota regardless of the number of currencies or data points returned.</li>
-            <li class="mb-4">Requests to our currencies.json and usage.json API endpoints are 'free', and don't count towards your quota.</li>
-            <li class="mb-4">Requests to our time-series.json API endpoint count as a single request for each day of data returned. For example, a time-series request for two weeks of historical exchange rate information will count as 14 API requests.</li>
+            <li class="mb-4">
+                Each HTTP request to our latest.json, historical/*.json and
+                /convert API endpoints counts as a single request towards your
+                usage quota regardless of the number of currencies or data
+                points returned.
+            </li>
+            <li class="mb-4">
+                Requests to our currencies.json and usage.json API endpoints are
+                'free', and don't count towards your quota.
+            </li>
+            <li class="mb-4">
+                Requests to our time-series.json API endpoint count as a single
+                request for each day of data returned. For example, a
+                time-series request for two weeks of historical exchange rate
+                information will count as 14 API requests.
+            </li>
         </ul>
-        <h3 class="text-xl font-semibold mb-6">What happens if I go over my allowance?</h3>
-        <p class="mb-6">If you exceed your API request allowance in a given period, we'll get in touch via email to discuss ways we can keep supporting you. You may choose to lower your usage or subscribe to a plan with a higher monthly request volume. Your app ID and any connected integrations will remain active (we won't restrict access without attempting to make contact several times first).</p>
-        <p class="mb-6">If we don't hear back from you after reaching out several times (or if your usage volume stays over the quota for two months or more) we may then restrict your access. You can restore your access by contacting us.</p>
+        <h3 class="text-xl font-semibold mb-6">
+            What happens if I go over my allowance?
+        </h3>
+        <p class="mb-6">
+            If you exceed your API request allowance in a given period, we'll
+            get in touch via email to discuss ways we can keep supporting you.
+            You may choose to lower your usage or subscribe to a plan with a
+            higher monthly request volume. Your app ID and any connected
+            integrations will remain active (we won't restrict access without
+            attempting to make contact several times first).
+        </p>
+        <p class="mb-6">
+            If we don't hear back from you after reaching out several times (or
+            if your usage volume stays over the quota for two months or more) we
+            may then restrict your access. You can restore your access by
+            contacting us.
+        </p>
     </div>
 </DashboardLayout>

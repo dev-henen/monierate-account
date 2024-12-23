@@ -15,45 +15,58 @@
     let error = "";
     let updating: boolean = false;
 
-    const updateAccountDetails = async () => {
-        error = "";
+    const updateAccountDetails = async (): Promise<void> => {
+        try {
+            error = "";
 
-        if (email === "" || firstName === "" || lastName === "") {
-            error =
-                "First name, last name and email are required for this action.";
-            goto("#return-angle");
-            return;
-        }
+            // Input validation
+            if (!email.trim() || !firstName.trim() || !lastName.trim()) {
+                error =
+                    "First name, last name, and email are required for this action.";
+                goto("#return-angle");
+                return;
+            }
 
-        updating = true;
-        const response = await fetch("/api/users/update_user", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                firstName,
-                lastName,
-                backupContactEmail,
-                website,
-                billingContactEmail,
-                newPassword,
-            }),
-        });
+            updating = true;
 
-        const data = await response.json();
-        updating = false;
-        if (response.ok) {
-            console.log(data);
-            notify("Account details updated successfully");
-        } else {
-            notify(data.message);
+            const payload = {
+                email: email.trim(),
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+                backupContactEmail: backupContactEmail?.trim() || null,
+                website: website?.trim() || null,
+                billingContactEmail: billingContactEmail?.trim() || null,
+                newPassword: newPassword?.trim() || null,
+            };
+
+            const response = await fetch("/api/users/update_user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                notify(data.message || "Account details updated successfully");
+            } else {
+                notify(
+                    data.message ||
+                        "Failed to update account details. Please try again.",
+                );
+            }
+        } catch (error) {
+            console.error("Error updating account details:", error);
+            notify("An unexpected error occurred. Please try again later.");
+        } finally {
+            updating = false; // Reset updating state
         }
     };
 </script>
 
-<DashboardLayout title="dashboard">
+<DashboardLayout title="edit account details">
     <div class="content">
         <h2 class="text-2xl font-semibold mb-8">Edit Account Details</h2>
         <p class="mb-4" id="return-angle">
@@ -119,7 +132,7 @@
                         bind:value={website}
                     />
                 </div>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500" id="backup-contact-area-angle">
                     This value does not affect your API access.
                 </p>
             </div>
@@ -195,6 +208,28 @@
             class="button"
             on:click={updateAccountDetails}
             disabled={updating}>Save changes</button
+        >
+    </div>
+
+    <div class="content mt-20">
+        <h3 class="text-xl font-semibold mb-6">
+            Don't need your Monierate account any more?
+        </h3>
+        <div class="mb-10">
+            <p class="mb-4">
+                If you no longer need your Monierate account and wish to delete
+                it, please click below and confirm on the next page.
+            </p>
+            <p class="mb-4">
+                We will delete all of your account information from our system
+                immediately, and any active integrations and App IDs will stop
+                working.
+            </p>
+        </div>
+        <a
+            href="/delete-account"
+            class="button bg-red-500 hover:bg-red-600 text-white"
+            >Delete my account</a
         >
     </div>
 </DashboardLayout>
