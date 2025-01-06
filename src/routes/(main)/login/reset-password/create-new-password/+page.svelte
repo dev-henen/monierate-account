@@ -1,6 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import { setCookie, getCookie } from "$lib/functions";
+    import { setCookie, getCookie, parseJSONSafe } from "$lib/functions";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { notify } from "$lib/notification";
@@ -59,7 +59,7 @@
 
             // Ensure response is properly handled
             const rawResponse = await response.json();
-            const getResponse = JSON.parse(rawResponse);
+            const getResponse:any = parseJSONSafe(rawResponse);
 
             if (getResponse.status === "error") {
                 notify(getResponse.message);

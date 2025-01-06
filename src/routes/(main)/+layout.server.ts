@@ -1,5 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
+import { parseJSONSafe } from '$lib/functions';
 
 export const load: LayoutServerLoad = async ({ cookies, fetch, url }) => {
     const authToken = cookies.get('auth_token');
@@ -22,6 +23,6 @@ export const load: LayoutServerLoad = async ({ cookies, fetch, url }) => {
     }
 
     let userData = await response.json();
-    userData = JSON.parse(userData);
+    userData = parseJSONSafe(userData);
     return { userData };
 };

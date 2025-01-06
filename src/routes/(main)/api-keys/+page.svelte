@@ -1,322 +1,305 @@
 <script lang="ts">
     import DashboardLayout from "$lib/components/DashboardLayout.svelte";
+    import Dialog from "$lib/components/Dialog.svelte";
     import { user } from "$lib/stores/user";
-    import { copyToClipboard, formatNumber } from "$lib/functions";
-    import { formatISODateTime } from "$lib/functions";
+    import {
+        copyToClipboard,
+        downloadStringAsFile,
+        parseJSONSafe,
+    } from "$lib/functions";
+    import { notify } from "$lib/notification";
+    import { onMount } from "svelte";
 
     let currentUser: any = $user;
-    let choosedAppIDName: string = "";
-    function setChoosedAppIDName(name: string) {
-        choosedAppIDName = name;
-    }
+    let accessKey: string = "******";
+    let accessKeyState: string = "hidden";
+    let openDialogs: any = {
+        confirmKeyGeneration: false,
+        setKeyExpiry: false,
+        verifyOTP: false,
+    };
+    let expirationPeriod: string = "0h";
+    let otp: string = "";
 
-    function calculateMonthlyUsagePercentage(data: any): {
-        remainingPercentage: number;
-        usedPercentage: number;
-        remainingRequests: number;
-    } {
-        const { plan, usage } = data;
-        const { requests_limit_per_month } = plan;
-        const { requests_made_this_month } = usage;
+    const openDialog = (key: any) => {
+        openDialogs[key] = true;
+        if (otp != "") {
+            otp = "";
+        }
+    };
+    const closeDialog = (key: any) => {
+        openDialogs[key] = false;
+        if (otp != "") {
+            otp = "";
+        }
+    };
+    // const showExpirationPeriodDialog = () => {
+    //     openDialogs.setKeyExpiry = true;
+    //     openDialogs.confirmKeyGeneration = false;
+    // };
+    let requestNewCodeTimeFrame: number = 0;
 
-        const usedPercentage =
-            (requests_made_this_month / requests_limit_per_month) * 100;
-        const remainingPercentage = 100 - usedPercentage;
-        const remainingRequests = requests_limit_per_month - usedPercentage;
+    const requestNewCode = (): void => {
+        if (requestNewCodeTimeFrame <= 0) {
+            requestNewCodeTimeFrame = 60; // Reset timer
+            const expirationTime =
+                Math.floor(Date.now() / 1000) + requestNewCodeTimeFrame; // Save expiration time
+            localStorage.setItem(
+                "requestNewCodeTimeFrame",
+                expirationTime.toString(),
+            );
+            sendOTPAndShowVerificationDialog();
+        }
 
-        return {
-            remainingPercentage: Math.max(remainingPercentage, 0),
-            usedPercentage: Math.min(usedPercentage, 100),
-            remainingRequests: remainingRequests,
+        const countdown = (): void => {
+            if (requestNewCodeTimeFrame > 0) {
+                requestNewCodeTimeFrame -= 1;
+                localStorage.setItem(
+                    "requestNewCodeTimeFrame",
+                    (
+                        Math.floor(Date.now() / 1000) + requestNewCodeTimeFrame
+                    ).toString(),
+                );
+                setTimeout(countdown, 1000); // Call countdown recursively
+            }
         };
-    }
-    const getMonthlyUsagePercentage =
-        calculateMonthlyUsagePercentage(currentUser);
+
+        countdown();
+    };
+
+    const sendOTPAndShowVerificationDialog = async () => {
+        try {
+            const response = await fetch("/api/users/send_verification_code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            let data = await response.json();
+            data = parseJSONSafe(data);
+            if (data.status === "success") {
+                notify("OTP sent to your email");
+                openDialogs.setKeyExpiry = false;
+                openDialogs.confirmKeyGeneration = false;
+                openDialogs.verifyOTP = true;
+            } else {
+                console.error(data.message);
+                notify("Could not send OTP, please try again");
+            }
+        } catch (error) {
+            console.error(error);
+            notify("An unknown error occurred, please try again");
+        }
+    };
+
+    const generateAccessKey = async () => {
+        if (otp == undefined) {
+            notify("Please provide a valid OTP");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/users/reset_api_key`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    otp,
+                    expirationPeriod,
+                }),
+            });
+
+            let result = await response.json();
+            result = parseJSONSafe(result);
+
+            if (result?.status === "error") {
+                const message =
+                    result?.message || "An error occurred. Please try again.";
+                console.error(
+                    `Error: ${message} (Code: ${result?.errorCode || "UNKNOWN_ERROR"})`,
+                );
+                notify(message);
+                return;
+            }
+
+            if (result?.data?.api_key) {
+                accessKey = result.data.api_key;
+                accessKeyState = "visible";
+                closeDialog("verifyOTP");
+                notify("API key reset successfully!");
+            } else {
+                console.warn("API key missing in the server response.");
+                notify("Unexpected server response. Please try again.");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            notify("An unknown error occurred. Please try again.");
+        }
+    };
+
+    const downloadAccessKey = () => {
+        downloadStringAsFile(accessKey, "monierate_api_access_key.txt");
+    };
+
+    onMount(() => {
+        // Initialize timer from localStorage if available
+        const storedTimeFrame = localStorage.getItem("requestNewCodeTimeFrame");
+        if (storedTimeFrame) {
+            const currentTime = Math.floor(Date.now() / 1000);
+            requestNewCodeTimeFrame = Math.max(
+                0,
+                parseInt(storedTimeFrame) - currentTime,
+            );
+            if (requestNewCodeTimeFrame > 0) {
+                requestNewCode();
+            }
+        }
+    });
 </script>
 
 <DashboardLayout title="API Keys">
     <div class="content">
         <h2 class="text-2xl font-semibold mb-4">API Keys</h2>
         <div class="mb-10">
-            Here are the active API keys for your account, which you can
-            currently use to access the Open Exchange Rates API. You can add and
-            remove API keys or expire old ones.
+            For the safety of your account, you can view and download an access
+            key only once when it is generated. If you lose it, you will need to
+            create a new key. When a new key is generated, the old one will
+            become invalid, requiring you to update all services that rely on
+            it.
         </div>
     </div>
 
     <div class="content">
-        <div
-            class="overflow-x-auto scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-400 dark:scrollbar-track-gray-800 mb-10"
-        >
-            <table
-                class="w-full min-w-[800px] border-collapse border rounded-lg text-gray-800 bg-white border-gray-200 dark:text-gray-300 dark:bg-gray-900 dark:border-gray-800"
-            >
-                <thead>
-                    <tr>
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Name</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >API Key</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Created</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Last Used</th
-                        >
-                        <th
-                            class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                            >Deactivate</th
-                        >
-                    </tr>
-                </thead>
-                <tbody>
-                    {#if currentUser.plan && currentUser.plan.is_active === true}
-                        <tr>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                            >
-                                {currentUser.plan.name || "API Key"}
-                                <a
-                                    href="/api-keys/{currentUser.plan._id}/edit"
-                                    class="text-[0.8em] ml-2"
-                                >
-                                    <i class="fas fa-edit"></i> Edit</a
-                                >
-                            </td>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                            >
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                        value={currentUser.plan._id}
-                                        readonly
-                                    />
-                                    <button
-                                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                        title="Copy API Key"
-                                        aria-label="Copy API Key"
-                                        on:click={() =>
-                                            copyToClipboard(
-                                                currentUser.plan._id,
-                                            )}
-                                    >
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </td>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                >{currentUser.plan.created_at
-                                    ? formatISODateTime(
-                                          currentUser.plan.created_at,
-                                      )
-                                    : "N/A"}</td
-                            >
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                >{currentUser.plan.updated_at
-                                    ? formatISODateTime(
-                                          currentUser.plan.updated_at,
-                                      )
-                                    : "N/A"}</td
-                            >
-                            <td
-                                class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                            >
-                                <a
-                                    href="/api-keys/{currentUser.plan
-                                        ._id}/deactivate"
-                                    class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                    title="Deactivate API Key"
-                                >
-                                    ✖
-                                </a>
-                            </td>
-                        </tr>
-                    {:else}
-                        <tr>
-                            <td class="colspan-5 p-10 text-center" colspan="5">
-                                They are no active API keys
-                            </td>
-                        </tr>
-                    {/if}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mt-6 space-y-2">
-            <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+        <div class="mt-6">
+            <label for="access-key" class="label">Access Key</label>
+            <div class="flex items-center gap-2 mb-6">
                 <input
-                    type="text"
-                    placeholder="Choose Name"
+                    type={accessKeyState === "hidden" ? "password" : "text"}
+                    placeholder="Access Key"
+                    id="access-key"
                     class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-md text-gray-800 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    bind:value={choosedAppIDName}
+                    bind:value={accessKey}
+                    readonly
                 />
-                <button class="button"> Generate an API Key </button>
-                <span class="text-gray-600 dark:text-gray-400"
-                    >({formatNumber(
-                        getMonthlyUsagePercentage.remainingRequests,
-                    )} remaining)</span
+                {#if accessKeyState !== "hidden"}
+                    <button
+                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+                        title="Copy API Key"
+                        aria-label="Copy API Key"
+                        on:click={() => copyToClipboard(accessKey)}
+                    >
+                        <i class="fas fa-copy"></i> copy
+                    </button>
+                {/if}
+            </div>
+
+            {#if accessKeyState !== "hidden"}
+                <button
+                    class="mt-4 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 border border-gray-500 p-2 rounded block"
+                    on:click={() => downloadAccessKey()}
+                    >Download access key</button
                 >
-            </div>
-
-            <!-- Common Names -->
-            <div class="md:flex items-center gap-2">
-                <p class="text-gray-600 dark:text-gray-400">
-                    Or choose one of these common names:
-                </p>
-                <div class="flex gap-4 mt-1 text-blue-500">
-                    <button
-                        class="hover:underline"
-                        on:click={() => setChoosedAppIDName("Development")}
-                        >Development</button
-                    >
-                    <button
-                        class="hover:underline"
-                        on:click={() => setChoosedAppIDName("Testing")}
-                        >Testing</button
-                    >
-                    <button
-                        class="hover:underline"
-                        on:click={() => setChoosedAppIDName("Staging")}
-                        >Staging</button
-                    >
-                    <button
-                        class="hover:underline"
-                        on:click={() => setChoosedAppIDName("Production")}
-                        >Production</button
-                    >
-                    <button
-                        class="hover:underline"
-                        on:click={() => setChoosedAppIDName("")}>(blank)</button
-                    >
-                </div>
-            </div>
+            {:else}
+                <button
+                    class="button w-full md:w-[250px]"
+                    on:click={() => openDialog("confirmKeyGeneration")}
+                >
+                    Generate a new access key
+                </button>
+            {/if}
         </div>
     </div>
 
-    <!--INACTIVE IDs-->
-    <div class="content mt-20">
-        <h2 class="text-2xl font-semibold mb-4">Inactive API Keys</h2>
-        <div class="mb-10">
-            The following API Keys are inactive and cannot be used to access the
-            API:
-        </div>
+    <Dialog
+        bind:isOpen={openDialogs}
+        id="confirmKeyGeneration"
+        title="Generate a new key?"
+        actions={[
+            {
+                label: "Continue",
+                callback: () => sendOTPAndShowVerificationDialog(),
+            },
+        ]}
+    >
+        <p class="mb-4">You're about to generate a new key.</p>
+        <!-- <p class="mb-4">
+            You will get to choose when the current one will expire. You need to
+            replace your access key with the new one before the expiry time.
+        </p> -->
+        <p class="mb-4">
+            For the security of your account, an authentication code will be
+            sent to your email address.
+        </p>
+        <p class="mb-4">
+            Please note that you'll only be able to see the new API key once so
+            remember to copy or download and keep it safely for future use.
+        </p>
+        <p class="mb-4">Do you want to continue?</p>
+    </Dialog>
 
-        <div
-            class="overflow-x-auto scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-400 dark:scrollbar-track-gray-800 mb-10"
+    <!-- <Dialog
+        bind:isOpen={openDialogs}
+        id="setKeyExpiry"
+        title="Choose current key expiration"
+        actions={[
+            {
+                label: "Continue",
+                callback: () => sendOTPAndShowVerificationDialog(),
+            },
+        ]}
+    >
+        <p class="mb-4">
+            Select the expiration time for the old access keys, which will
+            become invalid after generating a new key.
+        </p>
+
+        <label class="label" for="apiKeyExpiration"
+            >Access key expiration period</label
         >
-            <table
-                class="w-full min-w-[800px] border-collapse border rounded-lg text-gray-800 bg-white border-gray-200 dark:text-gray-300 dark:bg-gray-900 dark:border-gray-800"
-            >
-                <thead>
-                    <tr>
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Name</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >API Key</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Created</th
-                        >
-                        <th
-                            class="p-4 text-left border-b border-gray-200 dark:border-gray-800"
-                            >Removed</th
-                        >
-                        <th
-                            class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                            >Make Active</th
-                        >
-                    </tr>
-                </thead>
-                <tbody>
-                    {#if currentUser.plan && currentUser.plan.is_active === false}
-                        <tr>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                            >
-                                {currentUser.plan.name || "API Key"}
-                                <a
-                                    href="/api-keys/{currentUser.plan._id}/edit"
-                                    class="text-[0.8em] ml-2"
-                                >
-                                    <i class="fas fa-edit"></i> Edit</a
-                                >
-                            </td>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                            >
-                                <div class="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        class="w-full bg-transparent border border-gray-500 rounded p-1 px-2 text-gray-800 dark:text-gray-300"
-                                        value={currentUser.plan._id}
-                                        readonly
-                                    />
-                                    <button
-                                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                                        title="Copy API Key"
-                                        aria-label="Copy API Key"
-                                        on:click={() =>
-                                            copyToClipboard(
-                                                currentUser.plan._id,
-                                            )}
-                                    >
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </td>
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                >{currentUser.plan.created_at
-                                    ? formatISODateTime(
-                                          currentUser.plan.created_at,
-                                      )
-                                    : "N/A"}</td
-                            >
-                            <td
-                                class="p-4 border-b border-gray-200 dark:border-gray-800"
-                                >{currentUser.plan.updated_at
-                                    ? formatISODateTime(
-                                          currentUser.plan.updated_at,
-                                      )
-                                    : "N/A"}</td
-                            >
-                            <td
-                                class="p-3 text-center border-b border-gray-200 dark:border-gray-800"
-                            >
-                                <a
-                                    href="/api-keys/{currentUser.plan
-                                        ._id}/deactivate"
-                                    class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 dark:bg-green-700 dark:hover:bg-green-800"
-                                    title="Deactivate API Key"
-                                    aria-label="Deactivate API Key"
-                                >
-                                    <i class="fas fa-check"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    {:else}
-                        <tr>
-                            <td class="colspan-5 p-10 text-center" colspan="5">
-                                They are no inactive API keys
-                            </td>
-                        </tr>
-                    {/if}
-                </tbody>
-            </table>
-        </div>
-    </div>
+        <select
+            class="select"
+            id="apiKeyExpiration"
+            bind:value={expirationPeriod}
+        >
+            <option value="0h">Immediately</option>
+            <option value="1h">1 hour</option>
+            <option value="3h">3 hours</option>
+        </select>
+    </Dialog> -->
+
+    <Dialog
+        bind:isOpen={openDialogs}
+        id="verifyOTP"
+        title="Enter authentication code"
+        actions={[
+            {
+                label: "Generate a new access key",
+                callback: () => generateAccessKey(),
+            },
+        ]}
+    >
+        <p class="mb-4">
+            Please enter the verification code sent to your email address to
+            generate a new access key.
+        </p>
+
+        <label class="label" for="otp">Verify authentication code</label>
+        <input
+            type="text"
+            id="otp"
+            class="input"
+            bind:value={otp}
+            placeholder="Enter code from email"
+        />
+        <button
+            class="p-1 text-blue-500 {requestNewCodeTimeFrame > 0
+                ? 'hidden'
+                : ''}"
+            on:click={requestNewCode}>Didn't get a code?</button
+        >
+        <p class="p-1 {requestNewCodeTimeFrame > 0 ? '' : 'hidden'}">
+            To get a new code, please wait for {requestNewCodeTimeFrame} seconds.
+        </p>
+    </Dialog>
 </DashboardLayout>

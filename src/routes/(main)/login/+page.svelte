@@ -1,6 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import { setCookie } from "$lib/functions";
+    import { setCookie, parseJSONSafe } from "$lib/functions";
     import { notify } from "$lib/notification";
 
     let showPassword = writable(false);
@@ -47,12 +47,12 @@
 
             // Ensure response is properly handled
             const rawResponse = await response.json();
-            const getResponse = JSON.parse(rawResponse);
+            const getResponse:any = parseJSONSafe(rawResponse);
 
             if (getResponse.status === "success") {
                 const getToken = getResponse.data.user_token;
                 if (getToken) {
-                    setCookie("auth_token", getToken, 30); // Store token for 30 days
+                    setCookie("auth_token", getToken, 165); // Store token for 165 days
                     notify("Logged in successfully");
                     window.location.replace('/'); // Redirect to dashboard
                 } else {

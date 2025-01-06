@@ -288,3 +288,29 @@ export function formatNumber(value: number, locales: string = 'en-US', options: 
     const formatter = new Intl.NumberFormat(locales, options);
     return formatter.format(value);
 }
+
+
+export function downloadStringAsFile(text: string, filename: string) {
+    const element = document.createElement('a');
+    element.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+    element.download = filename;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+export function parseJSONSafe(data: any): object | null {
+    if (typeof data === "object" && data !== null) {
+        return data;
+    }
+    if (typeof data === "string") {
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            console.error("Invalid JSON string:", data);
+            return null;
+        }
+    }
+    console.error("Data is neither a valid JSON string nor an object:", data);
+    return null;
+}

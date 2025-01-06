@@ -1,7 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import { togglePopup } from "$lib/functions";
-    import { setCookie } from "$lib/functions";
+    import { togglePopup, setCookie, parseJSONSafe } from "$lib/functions";
     import { notify } from "$lib/notification";
 
     let showPassword = writable(false);
@@ -61,7 +60,7 @@
 
             // Ensure response is properly handled
             const rawResponse = await response.json();
-            const getResponse = JSON.parse(rawResponse);
+            const getResponse:any = parseJSONSafe(rawResponse);
 
             if (getResponse.status === "success") {
                 const getToken = getResponse.data.token;

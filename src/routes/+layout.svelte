@@ -15,7 +15,10 @@
 </script>
 
 <svelte:head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 </svelte:head>
 
 <slot />
@@ -65,7 +68,7 @@
         class="
     fixed bottom-20 md:bottom-10 left-1/2 transform -translate-x-1/2 z-50
     max-w-[90%] md:max-w-[400px] p-4
-    bg-black/85 text-white rounded-lg shadow-lg text-center text-[0.9em]
+    bg-black/80 dark:bg-black/85 text-white rounded-lg shadow-lg text-center text-[0.9em]
     fade-notification show
     "
     >

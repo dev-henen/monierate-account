@@ -193,10 +193,10 @@
                 </li>
                 <li>
                     <a
-                        href="/subscription-plan"
+                        href="/subscription"
                         class="block px-3 py-3 text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
-                        '/subscription-plan'
+                        '/subscription'
                             ? 'sidebar-active-link'
                             : ''}"
                     >

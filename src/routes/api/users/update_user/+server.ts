@@ -1,5 +1,6 @@
 import { basicAuth, getAccountEndpoint } from "$lib/server/utilities.js";
 import { json } from "@sveltejs/kit";
+import { parseJSONSafe } from "$lib/functions";
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, fetch, cookies }) {
@@ -24,8 +25,8 @@ export async function POST({ request, fetch, cookies }) {
         if (!response.ok) {
             return json({ error: "Failed to fetch user" }, { status: 500 });
         } else {
-            let currentUser = await response.json();
-            currentUser = JSON.parse(currentUser);
+            let currentUser:any = await response.json();
+            currentUser = parseJSONSafe(currentUser);
             currentUser = currentUser.data;
             if (!currentUser) return json({ error: "User not found" }, { status: 404 });
 
@@ -66,7 +67,7 @@ export async function POST({ request, fetch, cookies }) {
             const res = await fetch(endpoint, basicAuth('POST', payload));
 
             const result = await res.text();
-            const getResult = JSON.parse(result);
+            const getResult:any = parseJSONSafe(result);
             if (getResult.status === "success") {
                 return json({ message: "User updated successfully" }, { status: 200 });
             } else {
