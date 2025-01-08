@@ -80,8 +80,9 @@
             const result = data.data;
             if (result.status === "active") {
                 notify("Subscription created successfully.");
+                window.location.replace('/subscription');
             } else if (result.status === "pending") {
-                notify("Subscription still pending. No payment initiated.");
+                notify("Subscription is still pending. No payment has been initiated.");
                 paymentLink = result.payment_link;
                 paymentReference = result.reference;
                 toggleDialog("continueUnpaidSubscription", true);

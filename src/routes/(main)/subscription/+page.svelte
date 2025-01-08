@@ -8,6 +8,7 @@
     let currencySymbols: any = data.currencySymbols;
     let subscriptionPlans: any = data.subscriptionPlans;
     let currentUser = $user;
+    console.log(subscriptionPlans)
 </script>
 
 <DashboardLayout title="subscription plan">

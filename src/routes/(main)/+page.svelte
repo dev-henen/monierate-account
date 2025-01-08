@@ -36,7 +36,7 @@
                                     })}>Verify your email address</a
                             >
                         </span>
-                        <a href="/#" class="font-medium hover:underline">→</a>
+                        <a href="/#verify-email" class="font-medium hover:underline">→</a>
                     </div>
                 {/if}
 
@@ -54,7 +54,7 @@
                                 >Add backup contact information</a
                             >
                         </span>
-                        <a href="/#" class="font-medium hover:underline">→</a>
+                        <a href="/edit-account-details#backup-contact-area-angle" class="font-medium hover:underline">→</a>
                     </div>
                 {/if}
 
@@ -66,15 +66,15 @@
                         <span
                             class="text-gray-80 dark:text-gray-400 font-medium"
                         >
-                            <a href="/#" class="font-medium hover:underline"
-                                >Grab your App ID</a
+                            <a href="/api-keys" class="font-medium hover:underline"
+                                >Grab an Access Key</a
                             >
                             and
-                            <a href="/#" class="font-medium hover:underline"
+                            <a href="/api-keys" class="font-medium hover:underline"
                                 >make your first API request</a
                             >
                         </span>
-                        <a href="/#" class="font-medium hover:underline">→</a>
+                        <a href="/api-keys" class="font-medium hover:underline">→</a>
                     </div>
                 {/if}
 

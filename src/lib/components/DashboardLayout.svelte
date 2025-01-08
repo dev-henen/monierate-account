@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
     export let title: string = "Dashboard";
 
     let showMenu = false;
@@ -67,13 +68,15 @@
             <div
                 class="w-12 h-12 overflow-hidden rounded-full hidden md:inline-block"
             >
-                <img
-                    src="/icons/user.png"
-                    alt="Profile"
-                    width="100"
-                    height="100"
-                    class="object-cover"
-                />
+                <a href="/edit-account-details">
+                    <img
+                        src="/icons/user.png"
+                        alt="Profile"
+                        width="100"
+                        height="100"
+                        class="object-cover"
+                    />
+                </a>
             </div>
 
             <button
@@ -136,7 +139,8 @@
                 </li>
                 <li>
                     <a
-                        href="/get-started"
+                        href="https://docs.monierate.com/get-started"
+                        target="_blank"
                         class="block px-3 py-3 text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/get-started'
@@ -251,7 +255,7 @@
 
     <!-- Main Content Area -->
     <div
-        class="p-5 md:p-20 mt-[90px] md:mt-[50px] w-full {showMenu
+        class="p-3 md:p-20 mt-[90px] md:mt-[50px] w-full {showMenu
             ? 'ml-[300px]'
             : ''} md:w-[calc(100%-300px)] md:ml-[300px] transition-all duration-300"
     >
@@ -263,7 +267,7 @@
             ? 'ml-[300px]'
             : ''} md:w-[calc(100%-300px)] md:ml-[300px] transition-all duration-300"
     >
-        <ul class="flex items-center space-x-4 justify-center">
+        <ul class="flex items-center space-x-2 md:space-x-4 justify-center">
             <li>
                 <a href="/logout">Log Out</a>
             </li>
