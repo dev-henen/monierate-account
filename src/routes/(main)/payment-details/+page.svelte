@@ -3,7 +3,7 @@
     import { user } from "$lib/stores/user";
     import { notify } from "$lib/notification";
     import { goto } from "$app/navigation";
-    import { friendlyDate } from "$lib/functions";
+    import { getMonthAndYear } from "$lib/functions";
 
     export let data;
     let subscriptions = data.subscriptions;
@@ -133,93 +133,102 @@
 
             <div class="content self">
                 <h2 class="text-lg font-semibold mb-2">Invoice History</h2>
-                <p class="text-sm text-gray-600 mb-4">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     View and download your previous invoices.
                 </p>
 
-                <div class="space-y-4">
+                <div>
                     {#if subscriptions.length > 0}
+                        <div class="flex items-center border-b dark:border-gray-600 py-3 text-sm">
+                            <div class="w-1/3">DATE</div>
+                            <div class="w-2/3">STATUS</div>
+                            <div class="w-1/3 text-right pr-10">AMOUNT</div>
+                        </div>
                         {#each subscriptions.slice(0, 3) as subscription, i}
                             <div
-                                class="flex items-center border-b dark:border-gray-600 pb-2"
+                                class="flex items-center border-b dark:border-gray-600 py-3"
                             >
                                 <!-- Date -->
                                 <div class="text-sm font-medium w-1/3">
-                                    {friendlyDate(subscription.updated_at)}
+                                    <a href="/payment-details/${subscription._id}" class="text-dark dark:text-gray-200 underline">
+                                        {getMonthAndYear(subscription.updated_at)}
+                                    </a>
                                 </div>
 
                                 <!-- Status -->
-                                <div class="flex items-center space-x-2 w-1/3">
+                                <div class="flex items-center space-x-2 w-2/3">
                                     <span
                                         class="px-2 py-1 text-xs font-medium {subscription.payment_status ===
                                         'paid'
-                                            ? 'bg-green-100 text-green-700'
+                                            ? 'bg-green-100 text-green-700 dark:bg-gray-100 dark:text-gray-700'
                                             : 'bg-red-100 text-red-700'} rounded"
                                     >
                                         <i
                                             class="fa {subscription.payment_status ===
                                             'paid'
-                                                ? 'fa-check-circle'
-                                                : 'fa-close'}"
+                                                ? 'fa-check'
+                                                : 'fa-close'} px-1"
                                         ></i>
                                         {subscription.payment_status}
                                     </span>
                                 </div>
 
-                                <!-- Amount -->
-                                <div class="text-sm font-medium w-1/3">
+                                <div class="flex justify-end w-1/3">
+                                    <!-- Amount -->
+                                    <div class="text-sm font-medium mr-10">
                                     {currencySymbols[subscription.amount.unit]
-                                        ? `${currencySymbols[subscription.amount.unit]}${subscription.amount.value}`
+                                        ? `${currencySymbols[subscription.amount.unit]}${subscription.amount.value.toFixed(2)}`
                                         : `${subscription.amount.value}${subscription.amount.unit}`}
+                                    </div>
+                                    <!-- More options -->
+                                    <span class="relative">
+                                        <button
+                                            class="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                            aria-label="More options"
+                                            on:click={() => {
+                                                openInvoiceHistoryDropdown(i);
+                                            }}
+                                        >
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <span
+                                            class="hidden z-10 absolute right-0 bottom-[-45px] p-2 bg-white dark:bg-gray-900 shadow rounded-tl-lg rounded-bl-lg rounded-br-lg transition-all ease-in-out duration-300 invoice-history-dropdown index-{i}"
+                                        >
+                                            {#if subscription.payment_status === "paid"}
+                                                <button
+                                                    class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
+                                                    on:click={() => {
+                                                        goto(
+                                                            `/payment-details/${subscription._id}#download`,
+                                                        );
+                                                    }}
+                                                >
+                                                    Download invoice
+                                                </button>
+                                                <button
+                                                    class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
+                                                    on:click={() => {
+                                                        goto(
+                                                            `/payment-details/${subscription._id}`,
+                                                        );
+                                                    }}
+                                                >
+                                                    View invoice
+                                                </button>
+                                            {:else}
+                                                <button
+                                                    class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
+                                                    on:click={() => {
+                                                        window.location.href = `${subscription.payment_link}`;
+                                                    }}
+                                                >
+                                                    Continue and pay
+                                                </button>
+                                            {/if}
+                                        </span>
+                                    </span>
                                 </div>
 
-                                <!-- More options -->
-                                <span class="relative">
-                                    <button
-                                        class="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                        aria-label="More options"
-                                        on:click={() => {
-                                            openInvoiceHistoryDropdown(i);
-                                        }}
-                                    >
-                                        <i class="fa fa-ellipsis-h"></i>
-                                    </button>
-                                    <span
-                                        class="hidden z-10 absolute right-0 bottom-[-45px] p-2 bg-white dark:bg-gray-900 shadow rounded-tl-lg rounded-bl-lg rounded-br-lg transition-all ease-in-out duration-300 invoice-history-dropdown index-{i}"
-                                    >
-                                        {#if subscription.payment_status === "paid"}
-                                            <button
-                                                class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
-                                                on:click={() => {
-                                                    goto(
-                                                        `/payment-details/${subscription._id}#download`,
-                                                    );
-                                                }}
-                                            >
-                                                Download invoice
-                                            </button>
-                                            <button
-                                                class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
-                                                on:click={() => {
-                                                    goto(
-                                                        `/payment-details/${subscription._id}`,
-                                                    );
-                                                }}
-                                            >
-                                                View invoice
-                                            </button>
-                                        {:else}
-                                            <button
-                                                class="w-full px-6 py-2 text-xs font-medium border-b border-gray-500 rounded whitespace-nowrap text-left"
-                                                on:click={() => {
-                                                    window.location.href = `${subscription.payment_link}`;
-                                                }}
-                                            >
-                                                Continue and pay
-                                            </button>
-                                        {/if}
-                                    </span>
-                                </span>
                             </div>
                         {/each}
                     {:else}

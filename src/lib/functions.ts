@@ -314,3 +314,13 @@ export function parseJSONSafe(data: any): object | null {
     console.error("Data is neither a valid JSON string nor an object:", data);
     return null;
 }
+
+export function getMonthAndYear(dateInput: Date | string): string {
+    const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date input");
+    }
+  
+    const options: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
+    return date.toLocaleDateString(undefined, options).replace(" ", ", ");
+  }

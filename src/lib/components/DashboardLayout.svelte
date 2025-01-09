@@ -92,7 +92,7 @@
     <!-- Sidebar -->
     <nav
         id="sidebar"
-        class="bg-gray-900 shadow-2xl md:shadow-none z-30 md:z-0
+        class="bg-gray-50 dark:bg-gray-900 shadow-2xl md:shadow-none z-30 md:z-0
         md:w-[300px] {showMenu
             ? 'w-[300px] p-4'
             : 'w-0'} overflow-hidden h-full fixed top-0 left-0 bg-inherit md:p-4 transition-all duration-300"
@@ -103,6 +103,13 @@
                     src="/monierate-logo-white.png"
                     alt="Monierate"
                     width="150"
+                    class="hidden dark:inline"
+                />
+                <img
+                    src="/monierate-logo.png"
+                    alt="Monierate"
+                    width="150"
+                    class="dark:hidden"
                 />
             </a>
             <button
@@ -119,7 +126,7 @@
                 <li>
                     <a
                         href="/"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/'
                             ? 'sidebar-active-link'
@@ -132,7 +139,7 @@
                 <!--API Usage-->
                 <li>
                     <div
-                        class="text-sm text-gray-500 dark:text-gray-400 p-4 mb-0 pt-5"
+                        class="text-sm text-gray-400 dark:text-gray-400 p-4 mb-0 pt-5"
                     >
                         API Usage
                     </div>
@@ -141,7 +148,7 @@
                     <a
                         href="https://docs.monierate.com/get-started"
                         target="_blank"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/get-started'
                             ? 'sidebar-active-link'
@@ -153,7 +160,7 @@
                 <li>
                     <a
                         href="/api-keys"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/api-keys'
                             ? 'sidebar-active-link'
@@ -165,7 +172,7 @@
                 <li>
                     <a
                         href="/usage-statistics"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/usage-statistics'
                             ? 'sidebar-active-link'
@@ -178,7 +185,7 @@
                 <!--Account-->
                 <li>
                     <div
-                        class="text-sm text-gray-500 dark:text-gray-400 p-4 mb-0 pt-5"
+                        class="text-sm text-gray-400 dark:text-gray-400 p-4 mb-0 pt-5"
                     >
                         Account
                     </div>
@@ -186,7 +193,7 @@
                 <li>
                     <a
                         href="/edit-account-details"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/edit-account-details'
                             ? 'sidebar-active-link'
@@ -198,7 +205,7 @@
                 <li>
                     <a
                         href="/subscription"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/subscription'
                             ? 'sidebar-active-link'
@@ -210,7 +217,7 @@
                 <!-- <li>
                     <a
                         href="/email-notifications"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath === '/email-notifications' ? 'sidebar-active-link' : ''}"
                     >
                         <i class="fas fa-bell pr-2"></i> Email Notifications
@@ -220,7 +227,7 @@
                 <!--Billing-->
                 <li>
                     <div
-                        class="text-sm text-gray-500 dark:text-gray-400 p-4 mb-0 pt-5"
+                        class="text-sm text-gray-400 dark:text-gray-400 p-4 mb-0 pt-5"
                     >
                         Billing
                     </div>
@@ -228,7 +235,7 @@
                 <li>
                     <a
                         href="/payment-details"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/payment-details'
                             ? 'sidebar-active-link'
@@ -240,7 +247,7 @@
                 <li>
                     <a
                         href="/billing-history"
-                        class="block px-3 py-3 text-gray-300
+                        class="block px-3 py-3 text-gray-600 dark:text-gray-300
                                     sidebar-hover-link rounded-md {currentPath ===
                         '/billing-history'
                             ? 'sidebar-active-link'
@@ -291,9 +298,9 @@
 
 <style>
     .sidebar-hover-link {
-        @apply hover:hover:bg-gray-800;
+        @apply hover:bg-gray-200 dark:hover:bg-gray-800;
     }
     .sidebar-active-link {
-        @apply bg-gray-800;
+        @apply bg-gray-200 dark:bg-gray-800;
     }
 </style>
