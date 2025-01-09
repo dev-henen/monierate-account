@@ -318,9 +318,14 @@ export function parseJSONSafe(data: any): object | null {
 export function getMonthAndYear(dateInput: Date | string): string {
     const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
     if (isNaN(date.getTime())) {
-      throw new Error("Invalid date input");
+        throw new Error("Invalid date input");
     }
-  
+
     const options: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
     return date.toLocaleDateString(undefined, options).replace(" ", ", ");
-  }
+}
+
+export function maskText(input: string, excludeLength: number = 4): string {
+    const regex = new RegExp(`.(?=.{${excludeLength}})`, 'g');
+    return input.replace(regex, '*');
+}

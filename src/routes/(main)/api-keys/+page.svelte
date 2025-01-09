@@ -6,12 +6,13 @@
         copyToClipboard,
         downloadStringAsFile,
         parseJSONSafe,
+        maskText,
     } from "$lib/functions";
     import { notify } from "$lib/notification";
     import { onMount } from "svelte";
 
     let currentUser: any = $user;
-    let accessKey: string = "******";
+    let accessKey: string = maskText(currentUser.api_key.slice(-40), 4);
     let accessKeyState: string = "hidden";
     let openDialogs: any = {
         confirmKeyGeneration: false,
@@ -175,7 +176,7 @@
             <label for="access-key" class="label">Access Key</label>
             <div class="flex items-center gap-2 mb-6">
                 <input
-                    type={accessKeyState === "hidden" ? "password" : "text"}
+                    type="text"
                     placeholder="Access Key"
                     id="access-key"
                     class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-md text-gray-800 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
