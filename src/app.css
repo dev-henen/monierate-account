@@ -7,13 +7,9 @@
         @apply font-worksans font-normal bg-white dark:bg-gray-800 dark:text-gray-300;
         padding: 0;
         margin: 0;
+        overflow-x: hidden;
     }
     
-    body {
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-
     h1, h2, h3, h4, h5, h6 {
         @apply font-bitter font-semibold text-black dark:text-gray-200;
     }
