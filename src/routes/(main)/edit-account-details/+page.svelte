@@ -8,7 +8,6 @@
     let email = currentUser.email || "";
     let firstName = currentUser.firstname || "";
     let lastName = currentUser.lastname || "";
-    let backupContactEmail = currentUser.backup_contact_email || "";
     let website = currentUser.website || "";
     let billingContactEmail = currentUser.billing_contact_email || "";
     let newPassword = "";
@@ -33,7 +32,6 @@
                 email: email.trim(),
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
-                backupContactEmail: backupContactEmail?.trim() || null,
                 website: website?.trim() || null,
                 billingContactEmail: billingContactEmail?.trim() || null,
                 newPassword: newPassword?.trim() || null,
@@ -136,29 +134,6 @@
                     This value does not affect your API access.
                 </p>
             </div>
-        </div>
-
-        <div class="mb-16">
-            <h3 class="text-xl font-semibold mb-6">Backup Contact</h3>
-            <div class="mb-4 w-[600px] max-w-full">
-                <label for="backup-email" class="label"
-                    >Secondary/Backup Email:</label
-                >
-                <input
-                    type="url"
-                    id="backup-email"
-                    placeholder="Your backup email address"
-                    class="input"
-                    bind:value={backupContactEmail}
-                />
-            </div>
-            <p class="text-sm text-gray-500">
-                Adding a secondary email helps to make sure you never lose
-                access to your account. This email address cannot be used to
-                login, and will not receive account-related emails. It will only
-                be used if we need to get in touch with you urgently, but we are
-                unable to reach you at your primary email address.
-            </p>
         </div>
 
         <div class="mb-16">

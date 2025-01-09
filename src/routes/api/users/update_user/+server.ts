@@ -5,14 +5,13 @@ import { parseJSONSafe } from "$lib/functions";
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, fetch, cookies }) {
     const authToken = cookies.get('auth_token');
-    const { email, firstName, lastName, backupContactEmail, website, billingContactEmail, newPassword } = await request.json();
+    const { email, firstName, lastName, website, billingContactEmail, newPassword } = await request.json();
     const payload = {} as {
         user_token: string
         email: string
         password: string
         firstname: string
         lastname: string
-        backup_contact_email: string
         website: string
         billing_contact_email: string
     };
@@ -44,10 +43,6 @@ export async function POST({ request, fetch, cookies }) {
 
             if (lastName?.trim() && currentUser.lastname !== lastName.trim()) {
                 payload.lastname = lastName.trim();
-            }
-
-            if (backupContactEmail?.trim() && currentUser.backupContactEmail !== backupContactEmail.trim()) {
-                payload.backup_contact_email = backupContactEmail.trim();
             }
 
             if (website?.trim() && currentUser.website !== website.trim()) {
