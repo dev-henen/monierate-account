@@ -7,7 +7,7 @@ export async function POST({ request, fetch, cookies }) {
     const { otp, expirationPeriod } = await request.json();
     const payload = {} as {
         user_token: string,
-        verify_code: string,
+        mfa_code: string,
         expiration_period: string
     };
 
@@ -16,7 +16,7 @@ export async function POST({ request, fetch, cookies }) {
     }
 
     payload.user_token = authToken;
-    payload.verify_code = otp;
+    payload.mfa_code = otp;
     //payload.expiration_period = expirationPeriod;
 
     const endpoint = getAccountEndpoint("/users/reset_api_key");
