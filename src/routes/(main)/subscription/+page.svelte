@@ -8,7 +8,6 @@
     let currencySymbols: any = data.currencySymbols;
     let subscriptionPlans: any = data.subscriptionPlans;
     let currentUser = $user;
-    console.log(subscriptionPlans)
 </script>
 
 <DashboardLayout title="subscription plan">
@@ -16,12 +15,7 @@
         <h2 class="text-2xl font-semibold mb-8">Subscription Plan</h2>
         {#if currentUser.plan}
             <p class="mb-4" id="return-angle">
-                You're subscribed to the {currentUser.plan.name} Plan. You {currentUser
-                    .plan.code === "free"
-                    ? "started with"
-                    : "switched to"} this plan on {formatISODateTime(
-                    currentUser.plan.updated_at,
-                )}.
+                You're subscribed to the {currentUser.plan.name} Plan.
             </p>
             <p class="mb-8">
                 You can change your subscription plan by choosing one of the
@@ -32,9 +26,12 @@
 
     <div class="content grid md:grid-cols-3 gap-10">
         {#if subscriptionPlans}
-            {#each subscriptionPlans as plan}
+            {#each subscriptionPlans.sort((a:any, b:any) => b.price - a.price) as plan}
                 <div
-                    class="border dark:border-gray-500 rounded-lg shadow-lg p-6 hover:scale-105 transition-all duration-300"
+                    class="border dark:border-gray-500 rounded-lg shadow-lg p-6 hover:scale-105 transition-all duration-300 {plan.code ===
+                    'free'
+                        ? 'md:col-span-3 md:place-self-center'
+                        : ''}"
                 >
                     <div class="text-center">
                         <h2
@@ -54,7 +51,7 @@
                         </p>
                     </div>
                     <ul class="mt-6 space-y-4">
-                        <li
+                        <!-- <li
                             class="flex items-center text-gray-700 dark:text-gray-300"
                         >
                             <i class="fas fa-check text-green-500 mr-2"></i>
@@ -62,15 +59,29 @@
                                 >{formatNumber(plan.requests_credit_per_month)} request
                                 <b>credit per month</b></span
                             >
-                        </li>
+                        </li> -->
                         <li
                             class="flex items-center text-gray-700 dark:text-gray-300"
                         >
                             <i class="fas fa-check text-green-500 mr-2"></i>
                             <span class="font-medium"
                                 >{formatNumber(plan.requests_limit_per_month)} request
-                                <b>limit per month</b></span
+                                <b>per month</b></span
                             >
+                        </li>
+                        <li
+                        class="flex items-center text-gray-700 dark:text-gray-300">
+                            {#if plan.features.minute_updates}
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="font-medium">
+                                    {formatNumber(plan.features.minute_updates)} <b>minute updates</b>
+                                </span>
+                            {:else}
+                                <i class="fas fa-times text-red-500 ml-1 mr-3"></i>
+                                <span class="font-medium">
+                                    no <b>limit updates</b>
+                                </span>
+                            {/if}
                         </li>
                         <li
                             class="flex items-center text-gray-700 dark:text-gray-300"
@@ -103,13 +114,13 @@
                             {#if plan.features.custom_reports === true}
                                 <i class="fas fa-check text-green-500 mr-2"></i>
                                 <span class="font-medium">
-                                    with <b>custom reports</b>
+                                    with <b>custom historical reports</b>
                                 </span>
                             {:else}
                                 <i class="fas fa-times text-red-500 ml-1 mr-3"
                                 ></i>
                                 <span class="font-medium">
-                                    no <b>custom reports</b>
+                                    no <b>custom historical reports</b>
                                 </span>
                             {/if}
                         </li>

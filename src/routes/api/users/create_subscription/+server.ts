@@ -10,7 +10,6 @@ export async function POST({ request, fetch, cookies }) {
         user_token: string;
         plan: string;
         payment_channel: string;
-        billing_circle: string;
         redirect_url: string;
         units: number;
     };
@@ -22,9 +21,8 @@ export async function POST({ request, fetch, cookies }) {
         payload.user_token = authToken;
         payload.plan = planID;
         payload.payment_channel = paymentMethod;
-        //payload.billing_circle = billingCircle;
         payload.redirect_url = redirectUrl;
-        payload.units = 1;
+        payload.units = 12;// billingCircle == 'monthly' ? 1 : 12;
 
         const endpoint = getAccountEndpoint("/users/create_subscription");
         const res = await fetch(endpoint, basicAuth('POST', payload));

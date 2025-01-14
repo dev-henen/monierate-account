@@ -12,7 +12,7 @@
     import { onMount } from "svelte";
 
     let currentUser: any = $user;
-    let accessKey: string = maskText(currentUser.api_key.slice(-40), 4);
+    let accessKey: string = maskText(currentUser?.api_key?.slice(-40) || '', 4);
     let accessKeyState: string = "hidden";
     let openDialogs: any = {
         confirmKeyGeneration: false,

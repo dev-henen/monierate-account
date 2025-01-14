@@ -120,7 +120,7 @@
                         bind:value={email}
                     />
                 </div>
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label for="website" class="label">Website:</label>
                     <input
                         type="url"
@@ -129,13 +129,13 @@
                         class="input"
                         bind:value={website}
                     />
-                </div>
+                </div> -->
                 <p class="text-sm text-gray-500" id="backup-contact-area-angle">
                     This value does not affect your API access.
                 </p>
             </div>
         </div>
-
+<!-- 
         <div class="mb-16">
             <h3 class="text-xl font-semibold mb-6">Billing Details</h3>
             <div class="mb-4 w-[600px] max-w-full">
@@ -155,7 +155,7 @@
                 provided, invoices will be sent to your primary account email
                 address.
             </p>
-        </div>
+        </div> -->
 
         <div class="mb-16">
             <h3 class="text-xl font-semibold mb-6">Change Password</h3>
@@ -186,7 +186,7 @@
         >
     </div>
 
-    <div class="content mt-20">
+    <!-- <div class="content mt-20">
         <h3 class="text-xl font-semibold mb-6">
             Don't need your Monierate account any more?
         </h3>
@@ -206,5 +206,5 @@
             class="button bg-red-500 hover:bg-red-600 text-white"
             >Delete my account</a
         >
-    </div>
+    </div> -->
 </DashboardLayout>

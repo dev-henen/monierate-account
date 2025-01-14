@@ -107,7 +107,7 @@
                 </button>
             </div> -->
 
-            <div class="content self">
+            <!-- <div class="content self">
                 <h2 class="text-lg font-semibold mb-6">Billing Information</h2>
                 <div class="space-y-2 mb-8">
                     <div class="flex items-center">
@@ -129,7 +129,7 @@
                 >
                     Edit billing information
                 </a>
-            </div>
+            </div> -->
 
             <div class="content self">
                 <h2 class="text-lg font-semibold mb-2">Invoice History</h2>
