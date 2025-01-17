@@ -12,12 +12,13 @@
     import { onMount } from "svelte";
 
     let currentUser: any = $user;
-    let accessKey: string = maskText(currentUser?.api_key?.slice(-40) || '', 4);
+    let accessKey: string = maskText(currentUser?.api_key?.slice(-40) || "", 4);
     let accessKeyState: string = "hidden";
     let openDialogs: any = {
         confirmKeyGeneration: false,
         setKeyExpiry: false,
         verifyOTP: false,
+        no_api_key_prompt: false,
     };
     let expirationPeriod: string = "0h";
     let otp: string = "";
@@ -82,6 +83,7 @@
                 notify("OTP sent to your email");
                 openDialogs.setKeyExpiry = false;
                 openDialogs.confirmKeyGeneration = false;
+                openDialogs.no_api_key_prompt = false;
                 openDialogs.verifyOTP = true;
             } else {
                 console.error(data.message);
@@ -156,6 +158,10 @@
                 requestNewCode();
             }
         }
+
+        if (accessKey === "") {
+            openDialogs.no_api_key_prompt = true;
+        }
     });
 </script>
 
@@ -173,27 +179,29 @@
 
     <div class="content">
         <div class="mt-6">
-            <label for="access-key" class="label">Access Key</label>
-            <div class="flex items-center gap-2 mb-6">
-                <input
-                    type="text"
-                    placeholder="Access Key"
-                    id="access-key"
-                    class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-md text-gray-800 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    bind:value={accessKey}
-                    readonly
-                />
-                {#if accessKeyState !== "hidden"}
-                    <button
-                        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
-                        title="Copy API Key"
-                        aria-label="Copy API Key"
-                        on:click={() => copyToClipboard(accessKey)}
-                    >
-                        <i class="fas fa-copy"></i> copy
-                    </button>
-                {/if}
-            </div>
+            {#if accessKey !== ""}
+                <label for="access-key" class="label">Access Key</label>
+                <div class="flex items-center gap-2 mb-6">
+                    <input
+                        type="text"
+                        placeholder="Access Key"
+                        id="access-key"
+                        class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-md text-gray-800 bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        bind:value={accessKey}
+                        readonly
+                    />
+                    {#if accessKeyState !== "hidden"}
+                        <button
+                            class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400"
+                            title="Copy API Key"
+                            aria-label="Copy API Key"
+                            on:click={() => copyToClipboard(accessKey)}
+                        >
+                            <i class="fas fa-copy"></i> copy
+                        </button>
+                    {/if}
+                </div>
+            {/if}
 
             {#if accessKeyState !== "hidden"}
                 <button
@@ -206,7 +214,7 @@
                     class="button w-full md:w-[250px]"
                     on:click={() => openDialog("confirmKeyGeneration")}
                 >
-                    Generate a new access key
+                    Generate {accessKey === "" ? "an" : "a new"} access key
                 </button>
             {/if}
         </div>
@@ -302,5 +310,24 @@
         <p class="p-1 {requestNewCodeTimeFrame > 0 ? '' : 'hidden'}">
             To get a new code, please wait for {requestNewCodeTimeFrame} seconds.
         </p>
+    </Dialog>
+
+    <Dialog
+        bind:isOpen={openDialogs}
+        id="no_api_key_prompt"
+        title="You don't have an access key"
+        actions={[
+            {
+                label: "Generate now",
+                callback: () => sendOTPAndShowVerificationDialog(),
+            },
+        ]}
+    >
+        <div class="content">
+            <p class="mb-8">
+                You haven't generated an access key yet. Would you like to
+                create one now?
+            </p>
+        </div>
     </Dialog>
 </DashboardLayout>
