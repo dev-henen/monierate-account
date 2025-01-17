@@ -3,11 +3,54 @@
     import { user } from "$lib/stores/user";
     import { formatISODateTime } from "$lib/functions";
     import { formatNumber } from "$lib/functions";
+    import Dialog from "$lib/components/Dialog.svelte";
 
     export let data: any;
     let currencySymbols: any = data.currencySymbols;
     let subscriptionPlans: any = data.subscriptionPlans;
     let currentUser = $user;
+    let openDialogs: any = {
+        contactSupport: false,
+    };
+    let currentSelectedPlan: string = "";
+
+    const customer = {
+        plan: currentSelectedPlan,
+        currentPlan: currentUser.plan.name,
+        email: currentUser.email,
+        supportEmail: "hello@monierate.com",
+    } as {
+        plan: string;
+        currentPlan: string;
+        email: string;
+        supportEmail: string;
+    };
+
+    function contactSupport(planName: string): void {
+        openDialogs.contactSupport = true;
+        currentSelectedPlan = planName;
+        customer.plan = planName;
+    }
+
+    $: mailtoUrl = `mailto:${customer.supportEmail}?subject=${encodeURIComponent(
+        "Subscription Update",
+    )}&body=${encodeURIComponent(
+        `Plan: ${customer.plan}\nCurrent plan: ${customer.currentPlan}\nEmail: ${customer.email}\n\nRegards.`,
+    )}`;
+
+    const openMailto = (): void => {
+        try {
+            const opened = window.open(mailtoUrl, "_blank");
+            if (!opened) {
+                console.error("Popup blocked or failed to open mailto link.");
+            }
+        } catch (error) {
+            console.error(
+                "An error occurred while trying to open mailto link:",
+                error,
+            );
+        }
+    };
 </script>
 
 <DashboardLayout title="subscription plan">
@@ -26,7 +69,7 @@
 
     <div class="content grid md:grid-cols-3 gap-10">
         {#if subscriptionPlans}
-            {#each subscriptionPlans.sort((a:any, b:any) => b.price - a.price) as plan}
+            {#each subscriptionPlans.sort((a: any, b: any) => b.price - a.price) as plan}
                 <div
                     class="border dark:border-gray-500 rounded-lg shadow-lg p-6 hover:scale-105 transition-all duration-300 {plan.code ===
                     'free'
@@ -70,14 +113,17 @@
                             >
                         </li>
                         <li
-                        class="flex items-center text-gray-700 dark:text-gray-300">
+                            class="flex items-center text-gray-700 dark:text-gray-300"
+                        >
                             {#if plan.features.minute_updates}
                                 <i class="fas fa-check text-green-500 mr-2"></i>
                                 <span class="font-medium">
-                                    {formatNumber(plan.features.minute_updates)} <b>minute updates</b>
+                                    {formatNumber(plan.features.minute_updates)}
+                                    <b>minute updates</b>
                                 </span>
                             {:else}
-                                <i class="fas fa-times text-red-500 ml-1 mr-3"></i>
+                                <i class="fas fa-times text-red-500 ml-1 mr-3"
+                                ></i>
                                 <span class="font-medium">
                                     no <b>limit updates</b>
                                 </span>
@@ -131,11 +177,19 @@
                                 You are currently subscribed to this plan
                             </div>
                         {:else}
-                            <a
-                                href="/subscription/{plan._id}"
-                                class="w-full button block text-center"
-                                >Select Plan</a
-                            >
+                            {#if currentUser.plan.code === "free"}
+                                <a
+                                    href="/subscription/{plan._id}"
+                                    class="w-full button block text-center"
+                                    >Select Plan</a
+                                >
+                            {:else}
+                                <button
+                                    class="w-full button block text-center"
+                                    on:click={() => contactSupport(plan.name)}
+                                    >Select Plan</button
+                                >
+                            {/if}
                             <p
                                 class="mt-2 text-center text-sm text-gray-600 dark:text-gray-300"
                             >
@@ -147,4 +201,23 @@
             {/each}
         {/if}
     </div>
+
+    <Dialog
+        bind:isOpen={openDialogs}
+        id="contactSupport"
+        title={currentSelectedPlan}
+        actions={[
+            {
+                label: "Contact support",
+                callback: () => openMailto(),
+            },
+        ]}
+    >
+        <div class="content">
+            <p class="mb-8">
+                You've selected the {currentSelectedPlan} plan. Kindly contact support
+                so we can help you switch to this plan.
+            </p>
+        </div>
+    </Dialog>
 </DashboardLayout>

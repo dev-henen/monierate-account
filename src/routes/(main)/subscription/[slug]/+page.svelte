@@ -124,109 +124,78 @@
             cancelUnpaidSubscription(); // Clear the cookie after confirming the subscription
         }
     });
-
-    const customer = {
-        plan: getSelectedSubscriptionPlan.name,
-        currentPlan: currentUser.plan.name,
-        email: currentUser.email,
-        supportEmail: "hello@monierate.com",
-    };
-
-    const mailtoUrl = `mailto:${customer.supportEmail}?subject=${encodeURIComponent(
-        "Subscription Update",
-    )}&body=${encodeURIComponent(
-        `Plan: ${customer.plan}\nCurrent plan: ${customer.currentPlan}\nEmail: ${customer.email}\n\nRegards.`,
-    )}`;
 </script>
 
 <DashboardLayout title="Subscription Plan / One Last Step">
-    {#if currentUser.plan.code !== "free" && currentUser.plan.code !== getSelectedSubscriptionPlan.code}
-        <div class="content">
-            <h2 class="text-2xl font-semibold mb-8">
-                {getSelectedSubscriptionPlan.name}
-            </h2>
-            <p class="mb-8">
-                You've selected the {getSelectedSubscriptionPlan.name} plan. Kindly
-                contact support so we can help you switch to this plan.
-            </p>
+    <div class="content">
+        <h2 class="text-2xl font-semibold mb-8">One Last Step</h2>
+        <p class="mb-8">
+            Please finish setting up your subscription by paying
+            {formatNumber(getSelectedSubscriptionPlan.price)}
+            {getSelectedSubscriptionPlan.currency} monthly for your
+            {getSelectedSubscriptionPlan.name} subscription.
+        </p>
+        <p class="mb-4 text-2xl font-semibold">
+            {getSelectedSubscriptionPlan.name} Plan
+        </p>
+        <!-- <p class="mb-6">Billing cycle:</p>
+        <div class="mb-6">
+            <input
+                type="radio"
+                id="monthly"
+                name="billingCircle"
+                value="monthly"
+                class="inline-block mr-1 transform scale-150 cursor-pointer"
+                checked
+                on:click={() => setBillingCircle("monthly")}
+            />
+            <label for="monthly" class="mr-2 label inline-block">
+                Monthly ({formatNumber(getSelectedSubscriptionPlan.price)}
+                {getSelectedSubscriptionPlan.currency})
+            </label>
+            <input
+                type="radio"
+                id="yearly"
+                name="billingCircle"
+                value="yearly"
+                class="inline-block mr-1 transform scale-150 cursor-pointer"
+                on:click={() => setBillingCircle("yearly")}
+            />
+            <label for="yearly" class="label inline-block">
+                Yearly ({formatNumber(getSelectedSubscriptionPlan.price * 12)}
+                {getSelectedSubscriptionPlan.currency})
+            </label>
+        </div> -->
+    </div>
 
-            <div class="mt-16">
-                <a href={mailtoUrl} class="button" target="_blank">Contact Support</a>
-            </div>
-        </div>
-    {:else}
-        <div class="content">
-            <h2 class="text-2xl font-semibold mb-8">One Last Step</h2>
-            <p class="mb-8">
-                Please finish setting up your subscription by paying
-                {formatNumber(getSelectedSubscriptionPlan.price)}
-                {getSelectedSubscriptionPlan.currency} monthly for your
-                {getSelectedSubscriptionPlan.name} subscription.
-            </p>
-            <p class="mb-4 text-2xl font-semibold">
-                {getSelectedSubscriptionPlan.name} Plan
-            </p>
-            <p class="mb-6">Billing cycle:</p>
-            <div class="mb-6">
-                <input
-                    type="radio"
-                    id="monthly"
-                    name="billingCircle"
-                    value="monthly"
-                    class="inline-block mr-1 transform scale-150 cursor-pointer"
-                    checked
-                    on:click={() => setBillingCircle("monthly")}
-                />
-                <label for="monthly" class="mr-2 label inline-block">
-                    Monthly ({formatNumber(getSelectedSubscriptionPlan.price)}
-                    {getSelectedSubscriptionPlan.currency})
-                </label>
-                <input
-                    type="radio"
-                    id="yearly"
-                    name="billingCircle"
-                    value="yearly"
-                    class="inline-block mr-1 transform scale-150 cursor-pointer"
-                    on:click={() => setBillingCircle("yearly")}
-                />
-                <label for="yearly" class="label inline-block">
-                    Yearly ({formatNumber(
-                        getSelectedSubscriptionPlan.price * 12,
-                    )}
-                    {getSelectedSubscriptionPlan.currency})
-                </label>
-            </div>
-        </div>
-
-        <div class="content">
-            <p class="mb-6">How do you want to pay?</p>
-            <div class="w-full md:w-1/3">
-                <button
-                    class={`block w-full border dark:border-gray-500 rounded-lg p-1 cursor-pointer flex items-center justify-between gap-4 hover:border-blue-500 ${
-                        paymentMethod === "stripe" ? "ring" : ""
-                    } transition`}
-                    on:click={() => setPaymentMethod("stripe")}
-                >
-                    <span class="font-medium inline px-2">Credit Card</span>
-                    <img
-                        src="/icons/stripe-payment.png"
-                        alt="Stripe"
-                        class="h-12"
-                    />
-                </button>
-            </div>
-        </div>
-
-        <div class="content">
-            <button class="button w-full md:w-1/3" on:click={createSubscription}
-                >Pay Now</button
+    <div class="content">
+        <p class="mb-6">How do you want to pay?</p>
+        <div class="w-full md:w-1/3">
+            <button
+                class={`block w-full border dark:border-gray-500 rounded-lg p-1 cursor-pointer flex items-center justify-between gap-4 hover:border-blue-500 ${
+                    paymentMethod === "stripe" ? "ring" : ""
+                } transition`}
+                on:click={() => setPaymentMethod("stripe")}
             >
-            <div class="mt-8">
-                Review or change your subscription?
-                <a href="/subscription">Click here</a> to go to subscription plans.
-            </div>
+                <span class="font-medium inline px-2">Credit Card</span>
+                <img
+                    src="/icons/stripe-payment.png"
+                    alt="Stripe"
+                    class="h-12"
+                />
+            </button>
         </div>
-    {/if}
+    </div>
+
+    <div class="content">
+        <button class="button w-full md:w-1/3" on:click={createSubscription}
+            >Pay Now</button
+        >
+        <div class="mt-8">
+            Review or change your subscription?
+            <a href="/subscription">Click here</a> to go to subscription plans.
+        </div>
+    </div>
 
     <Dialog
         bind:isOpen={openDialogs}
