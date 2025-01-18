@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/">
+                    <a href="mailto:hello@tailgrids.com" target="_blank">
                         <span class="md:hidden">Help</span>
                         <span class="hidden md:inline">Help & Support</span>
                     </a>

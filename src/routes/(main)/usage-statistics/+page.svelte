@@ -57,20 +57,22 @@
             type: "bar",
             data: {
                 labels: [
-                    "Monthly Limit",
-                    "Daily Usage",
-                    "Credit Balance",
-                    "Failed Requests",
+                    //"Monthly Limit",
+                    //"Daily Usage",
+                    // "Credit Balance",
+                    // "Failed Requests",
+                    "Monthly Requests",
+                    "Daily Requests",
                 ],
                 datasets: [
                     {
                         label: "Usage Statistics",
                         data: [
-                            (requestsMadeThisMonth / totalMonthlyRequests) *
-                                100, // Monthly usage in %
-                            requestsMadeThisDay, // Daily usage (raw value)
-                            creditBalance, // Credit balance
-                            failedRequests, // Failed requests
+                            //(requestsMadeThisMonth / totalMonthlyRequests) *
+                           //     100, // Monthly usage in %
+                            //requestsMadeThisDay, // Daily usage (raw value)
+                            requestsMadeThisMonth, // Credit balance
+                            requestsMadeThisDay, // Failed requests
                         ],
                         backgroundColor: [
                             gradientColors(ctx, "#4caf50", "#81c784"), // Monthly
@@ -234,7 +236,7 @@
     <div class="content">
         <h3 class="text-2xl font-semibold mb-4">API Activity Breakdown</h3>
         <p class="mb-4">
-            This chart displays your account activity for the previous 60-day
+            This chart displays your account activity for the previous 30-days
             period.
         </p>
         <div class="h-[300px] my-20">
